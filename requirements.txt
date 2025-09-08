@@ -1,3 +1,34 @@
 flask
 tinydb
 timeago
+
+Project Name
+------------
+Socialinator
+
+Business Context
+----------------
+Enthusiasts for all things engineering, including mechanical, electrical, and software. These people need a way to share ideas and outsource their projects
+for help from others, or to simply find projects to work on with other people. This will be completed in a social media style format where individuals
+can interact and work together on projects.
+
+Problem Statment
+----------------
+Limited options exist for people to share technical ideas and projects with other people, many people are stunted in their abilities due to a lack of opportunity
+to share and receive ideas and help from other people with similar ideas, interests, or skills.
+
+Scope
+-----
+This solution will be available online as a website on Google Chrome, Firefox, Internet Explorer, Microsoft Edge, and Safari on their most recent versions. 
+It will also be accessible via Android and IOS devices as a downloadable application.
+in scope: 
+out of scope:
+
+Assumptions
+-----------
+
+Features
+--------
+
+Non-Functional Requirements
+---------------------------
