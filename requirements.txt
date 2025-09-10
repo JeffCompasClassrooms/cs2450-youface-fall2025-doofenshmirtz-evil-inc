@@ -4,7 +4,7 @@ timeago
 
 Project Name
 ------------
-Socialinator
+Social-inator
 
 Business Context
 ----------------
@@ -22,7 +22,7 @@ Scope
 This solution will be available on mobile and personal devices. 
 in scope: The system will function as it's own application, with no integration necessary. There will be a help page separate from the rest of the application
 for people who need it, or would like to report an issue.
-out of scope: 
+out of scope: Subscription service
 
 Assumptions
 -----------
@@ -35,13 +35,20 @@ by the general public and people will be able to discuss how to create an engine
 
 There will be a "bad" chat bot Norm, who gives bad information. It will be made clear to the users that you should do the opposite of what he says.
 
-Internet functionality, regions determine which posts you can see
+Internet functionality, regions determine which posts you can see.
+
+Log in page that assigns you a randomized avatar, adjustable later in settings.
+
+Main page connected to every other page, including settings. Settings and profile will always be located in the corner of the webpage.
 
 Non-Functional Requirements
 ---------------------------
-The server will be functional all the time
+The server will be functional 99% of the time.
 
-Available online as a website on Google Chrome, Firefox, Internet Explorer, Microsoft Edge, and Safari on their most recent versions
-Also available as an application for IOS or Android
-Response time at maximum 10 seconds
-Available from anywhere in the world
+Available online as a website on Google Chrome, Firefox, Internet Explorer, Microsoft Edge, and Safari on their most recent versions.
+
+Also available as an application for IOS or Android, portability.
+
+Response time at maximum 10 seconds.
+
+Available from anywhere in the world.
