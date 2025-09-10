@@ -41,6 +41,11 @@ Log in page that assigns you a randomized avatar, adjustable later in settings.
 
 Main page connected to every other page, including settings. Settings and profile will always be located in the corner of the webpage.
 
+Users will be able to search for and add friends, and communicate with them privately in direct messages.
+
+Site will have a public chatroom, allowing anyone within your region to chat with eachother.
+
+There will be a button places somewhere in the webpage, that when pressed will disconnect the user from the webpage.
 Non-Functional Requirements
 ---------------------------
 The server will be functional 99% of the time.
