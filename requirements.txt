@@ -19,16 +19,29 @@ to share and receive ideas and help from other people with similar ideas, intere
 
 Scope
 -----
-This solution will be available online as a website on Google Chrome, Firefox, Internet Explorer, Microsoft Edge, and Safari on their most recent versions. 
-It will also be accessible via Android and IOS devices as a downloadable application.
-in scope: 
-out of scope:
+This solution will be available on mobile and personal devices. 
+in scope: The system will function as it's own application, with no integration necessary. There will be a help page separate from the rest of the application
+for people who need it, or would like to report an issue.
+out of scope: 
 
 Assumptions
 -----------
+It is assumed that this product will be software exclusively, with hardware being required from the user. The app should be accessible by over 95% of potential users
 
 Features
 --------
+The users will have the ability to import images and project ideas that can be set to public or private. These projects, while in development, will be accessible
+by the general public and people will be able to discuss how to create an engineering project.
+
+There will be a "bad" chat bot Norm, who gives bad information. It will be made clear to the users that you should do the opposite of what he says.
+
+Internet functionality, regions determine which posts you can see
 
 Non-Functional Requirements
 ---------------------------
+The server will be functional all the time
+
+Available online as a website on Google Chrome, Firefox, Internet Explorer, Microsoft Edge, and Safari on their most recent versions
+Also available as an application for IOS or Android
+Response time at maximum 10 seconds
+Available from anywhere in the world
