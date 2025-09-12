@@ -56,4 +56,4 @@ Also available as an application for IOS or Android, portability.
 
 Response time at maximum 10 seconds.
 
-Available from anywhere in the world.
+Available from anywhere in the world
