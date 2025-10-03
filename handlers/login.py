@@ -34,6 +34,7 @@ def login():
 
     username = flask.request.form.get('username')
     password = flask.request.form.get('password')
+    age = flask.request.form.get('age')
 
     resp = flask.make_response(flask.redirect(flask.url_for('login.index')))
     resp.set_cookie('username', username)
@@ -41,7 +42,7 @@ def login():
 
     submit = flask.request.form.get('type')
     if submit == 'Create':
-        if users.new_user(db, username, password) is None:
+        if users.new_user(db, username, password, age) is None:
             resp.set_cookie('username', '', expires=0)
             resp.set_cookie('password', '', expires=0)
             flask.flash('Username {} already taken!'.format(username), 'danger')

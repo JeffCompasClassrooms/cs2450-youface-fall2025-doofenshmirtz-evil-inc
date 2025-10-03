@@ -4,7 +4,7 @@
 <div class="row">
   <div class="col-sm-6 mx-auto">
     <div class="card card-body bg-light">
-      <form method="post" action="/login">
+      <form method="post" action="/login" id="loginForm">
         <fieldset>
           <legend>Login</legend>
           <hr />
@@ -17,6 +17,10 @@
             <input type="password" class="form-control" name="password">
           </div>
           <div class="form-group">
+            <label for="birthday">Birthday</label>
+            <input type="date" class="form-control" name="birthday" id="birthday">
+          </div>
+          <div class="form-group">
             <input class="btn btn-primary" type="submit" name="type" value="Login">
             <input class="btn btn-success" type="submit" name="type" value="Create">
             <input class="btn btn-danger" type="submit" name="type" value="Delete">
@@ -26,4 +30,26 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.getElementById("loginForm").addEventListener("submit", function(event) {
+    const birthdayInput = document.getElementById("birthday").value;
+    if (!birthdayInput) return;
+
+    const today = new Date();
+    const birthday = new Date(birthdayInput);
+
+    let age = today.getFullYear() - birthday.getFullYear();
+    const monthDiff = today.getMonth() - birthday.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthday.getDate())) {
+      age--;
+    }
+
+    if (age < 13) {
+      alert("Sorry, you must be at least 13 years old to continue.");
+      event.preventDefault(); // now this will work!
+    }
+  });
+</script>
 {% endblock %}
