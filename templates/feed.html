@@ -25,7 +25,7 @@
     <div class="card bg-light">
       <div class="card-body">
         <h4 class="card-title">
-          <a href="/@{{ post.user }}">@{{ postluser }}</a>
+          <a href="/@{{ post.handle }}">@{{ post.handle }}</a>
         </h4>
         <h6 class="card-subtitle mb-2 text-muted">{{ post.time|convert_time }}</h6>
         <p class="card-text">{{ post.text }}</p>
@@ -53,7 +53,7 @@
         {% if friends %}
           <ul>
             {% for friend in friends %}
-              <li><a href="/friend/{{ friend.username }}">{{ friend.username }}</a></li>
+              <li><a href="/@{{ friend.handle }}">{{ friend.handle }}</a></li>
             {% endfor %}
           </ul>
         {% else %}

@@ -5,10 +5,10 @@ from handlers import copy
 blueprint = flask.Blueprint("public", __name__)
 
 @blueprint.route('/@<handle>')
-def view_public_profile(username):
+def view_public_profile(handle):
     """Publicly view a user's profile via @handle."""
     db = helpers.load_db()
-    user = users.get_user_by_name(db, username)
+    user = users.get_user_by_name(db, handle)
 
     if not user:
         flask.abort(404, description="User not found.")

@@ -24,7 +24,7 @@ def get_user_by_name(db, username):
     User = tinydb.Query()
     return users.get(User.username == username)
 
-def get_user_by_name(db, handle):
+def get_user_by_handle(db, handle):
     users = db.table('users')
     User = tinydb.Query()
     return users.get(User.handle == handle.lower())
