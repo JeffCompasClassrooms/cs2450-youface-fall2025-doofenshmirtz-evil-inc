@@ -1,12 +1,13 @@
 import tinydb
 
-def new_user(db, username, password, age):
+def new_user(db, username, handle, password, age):
     users = db.table('users')
     User = tinydb.Query()
-    if users.get(User.username == username):
+    if users.get((User.username == username) | (User.handle == handle.lower())):
         return None
     user_record = {
             'username': username,
+            'handle': handle.lower(),
             'password': password,
             'friends': [],
             'age': age
@@ -23,6 +24,11 @@ def get_user_by_name(db, username):
     users = db.table('users')
     User = tinydb.Query()
     return users.get(User.username == username)
+
+def get_user_by_handle(db, handle):
+    users = db.table('users')
+    User = tinydb.Query()
+    return users.get(User.handle == handle.lower())
 
 def delete_user(db, username, password):
     users = db.table('users')
