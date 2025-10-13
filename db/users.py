@@ -1,6 +1,7 @@
 import tinydb
 from datetime import date, datetime
 
+
 def calculate_age(birthday_str):
     """Return the integer age given a 'YYYY-MM-DD' birthday string."""
     if not birthday_str:
@@ -16,12 +17,13 @@ def calculate_age(birthday_str):
 def new_user(db, username, password, birthday, bio=""):
     users = db.table('users')
     User = tinydb.Query()
-    if users.get(User.username == username):
+    if users.get((User.username == username) | (User.handle == handle.lower())):
         return None
 
     user_record = {
         'username': username,
         'password': password,
+        'handle': handle.lower(),
         'friends': [],
         'birthday': birthday,
         'bio': bio
@@ -38,6 +40,11 @@ def get_user_by_name(db, username):
     users = db.table('users')
     User = tinydb.Query()
     return users.get(User.username == username)
+
+def get_user_by_handle(db, handle):
+    users = db.table('users')
+    User = tinydb.Query()
+    return users.get(User.handle == handle.lower())
 
 def delete_user(db, username, password):
     users = db.table('users')
