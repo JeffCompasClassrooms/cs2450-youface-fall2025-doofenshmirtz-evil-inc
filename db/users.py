@@ -1,7 +1,6 @@
 import tinydb
 from datetime import date, datetime
 
-
 def calculate_age(birthday_str):
     """Return the integer age given a 'YYYY-MM-DD' birthday string."""
     if not birthday_str:
