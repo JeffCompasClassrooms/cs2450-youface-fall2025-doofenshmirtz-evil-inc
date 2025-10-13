@@ -42,8 +42,23 @@
   </div>
 </div>
 
+<!--Confirm Password Logic-->
 <script>
-  document.getElementById("loginForm").addEventListener("submit", function(event) {
+  document.getElementById("signupForm").addEventListener("submit", function(event) {
+    const password = document.querySelector('input[name="password"]').value;
+    const confirmPassword = document.querySelector('input[name="password-confirm"]').value;
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match. Please try again.");
+      event.preventDefault(); // Stop form from submitting
+    }
+  });
+</script>
+
+
+<!--Get the user's birthday, and calculate whether or not they are over the age of 13-->
+<script>
+  document.getElementById("signupForm").addEventListener("submit", function(event) {
     const birthdayInput = document.getElementById("birthday").value;
     if (!birthdayInput) return;
 

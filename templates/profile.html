@@ -2,64 +2,19 @@
 
 {% block content %}
 <div class="row justify-content-md-center mb-4">
-  <h1 class="">{{username}}!</h1>
+  <h1 class="">{{ user }}'s Profile</h1>
 </div>
 
 <div class="row justify-content-md-center">
+  <h2 class="">My Profile</h2>
+</div>
 
-  <div class="col col-lg-8">
-    <div class="card bg-light mb-3">
-      <div class="card-body">
-        <h3 class="card-title">New Post</h3>
-        <form method="post" action="/post">
-          <div class="form-group">
-            <textarea class="form-control" name="post" rows="3" placeholder="What's on your mind?"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary" name="post-submit">Submit</button>
-        </form>
-      </div>
-    </div>
+  <!-- Post content can go here later -->
+<div class="row justify-content-md-center">
+  <h3 class="">Birthday: {{birthday}}</h3>
+</div>
+<div class="row justify-content-md-center">
+  <h3 class="">Age: {{age}}</h3>
+</div>
 
-    <h2 class="">My Feed</h2>
-    {% for post in posts %}
-    <div class="card bg-light">
-      <div class="card-body">
-        <h4 class="card-title">{{ post.user }}</h4>
-        <h6 class="card-subtitle mb-2 text-muted">{{ post.time|convert_time }}</h6>
-        <p class="card-text">{{ post.text }}</p>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-
-  <div class="col col-lg-3">
-    <div class="card bg-light mb-3">
-      <div class="card-body">
-        <h3 class="card-title">Add Friend</h3>
-        <form method="post" action="/addfriend">
-          <div class="form-group mb-1">
-            <input type="text" class="form-control" name="name" placeholder="username" />
-          </div>
-          <button type="submit" class="form-control btn btn-primary" name="addfriend">Submit</button>
-        </form>
-      </div>
-    </div>
-
-    <div class="card bg-light">
-      <div class="card-body">
-        <h3 class="card-title">My Friends</h3>
-        {% if friends %}
-          <ul>
-            {% for friend in friends %}
-              <li><a href="/friend/{{ friend.username }}">{{ friend.username }}</a></li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <p class="card-text">
-            Sorry, no friends!
-          </p>
-        {% endif %}
-      </div>
-    </div>
-  </div>
 {% endblock %}

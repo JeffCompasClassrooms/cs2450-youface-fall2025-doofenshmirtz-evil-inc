@@ -19,7 +19,7 @@ def addfriend():
 
     user = users.get_user(db, username, password)
     if not user:
-        flash('You need to be logged in to do that.', 'danger')
+        flask.flash('You need to be logged in to do that.', 'danger')
         return flask.redirect(flask.url_for('login.loginscreen'))
 
     # add the friend
