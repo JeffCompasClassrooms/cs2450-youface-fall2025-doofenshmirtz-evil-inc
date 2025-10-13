@@ -12,12 +12,13 @@ from db import helpers
 
 YOUFACE_URL = "http://localhost:5000"
 
-def create_test_user(db, username, password):
+def create_test_user(db, username, password, age):
     users = db.table('users')
     user_record = {
             'username': username,
             'password': password,
-            'friends': []
+            'friends': [],
+            'age': age
             }
     users.insert(user_record)
 
