@@ -14,6 +14,7 @@
         <form method="post" action="/post">
           <div class="form-group">
             <textarea class="form-control" name="post" rows="3" placeholder="What's on your mind?"></textarea>
+            <textarea class="form-control" name="tags" rows="1" placeholder="tags"></textarea>
           </div>
           <button type="submit" class="btn btn-primary" name="post-submit">Submit</button>
         </form>
@@ -27,6 +28,15 @@
         <h4 class="card-title">{{ post.user }}</h4>
         <h6 class="card-subtitle mb-2 text-muted">{{ post.time|convert_time }}</h6>
         <p class="card-text">{{ post.text }}</p>
+        {% if post.tags %}
+          <p class="card-text"></p>
+            <small>Tags:
+              {% for tag in post.tags %}
+              <span class="">{{ tag }}</span>
+            {% endfor %}
+          </small>
+        </p>
+{% endif %}
       </div>
     </div>
     {% endfor %}
