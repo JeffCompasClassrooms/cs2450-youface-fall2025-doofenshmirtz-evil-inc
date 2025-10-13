@@ -1,4 +1,4 @@
-import datetime
+import datetime 
 import flask
 from handlers import copy
 from db import posts, users, helpers
@@ -20,12 +20,14 @@ def signupscreen():
                                  subtitle=copy.subtitle)
 
 @signup_blueprint.route('/signup', methods=['POST'])
-@signup_blueprint.route('/signup', methods=['POST'])
 def signup_post():
     db = helpers.load_db()
     username = flask.request.form.get('username')
     password = flask.request.form.get('password')
     birthday = flask.request.form.get('birthday')
+
+    # Use username as the handle if none provided in form
+    handle = username  
 
     resp = flask.make_response(flask.redirect(flask.url_for('login.index')))
     resp.set_cookie('username', username)
@@ -34,7 +36,7 @@ def signup_post():
 
     submit = flask.request.form.get('type')
     if submit == 'Create Account':
-        if users.new_user(db, username, password, birthday) is None:
+        if users.new_user(db, username, handle, password, birthday) is None:
             resp.set_cookie('username', '', expires=0)
             resp.set_cookie('password', '', expires=0)
             resp.set_cookie('birthday', '', expires=0)
@@ -47,4 +49,3 @@ def signup_post():
         flask.flash(f'User {username} deleted successfully!', 'success')
 
     return resp
-
