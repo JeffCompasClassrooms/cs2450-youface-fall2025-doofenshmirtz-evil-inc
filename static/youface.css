@@ -10,3 +10,17 @@
         }
     }
 }
+.dropdown-animated { /*refers to the dropdown menu in the navbar. see base.html*/
+  display: block;
+  opacity: 0;
+  transform: translateY(-10px);
+  visibility: hidden;
+  transition: all 0.25s ease;
+  position: absolute;
+}
+
+.nav-item.dropdown.show .dropdown-animated {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
