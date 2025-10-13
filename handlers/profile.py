@@ -19,6 +19,7 @@ def profilescreen():
     if not user:
         return flask.redirect(flask.url_for('login.index'))
 
+    bio = user.get('bio')
     birthday = user.get('birthday')
     age = users.calculate_age(birthday) if birthday else None
 
@@ -28,5 +29,6 @@ def profilescreen():
         subtitle=copy.subtitle,
         user=username,
         birthday=birthday,
-        age=age
+        age=age,
+        bio=bio
     )

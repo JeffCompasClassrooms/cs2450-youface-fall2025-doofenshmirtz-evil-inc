@@ -76,6 +76,11 @@
       alert("Sorry, you must be at least 13 years old to continue.");
       event.preventDefault();
     }
+
+    if (age > 100) {
+      alert("Sorry, the birthday you have selected makes you too old to continue.");
+      event.preventDefault();
+    }
   });
 </script>
 {% endblock %}
