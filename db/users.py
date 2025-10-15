@@ -14,7 +14,7 @@ def calculate_age(birthday_str):
         age -= 1
     return age
 
-def new_user(db, username, handle, password, birthday, bio=""):
+def new_user(db, username, handle, password, birthday, pfp, bio=""):
     users = db.table('users')
     User = tinydb.Query()
     if users.get((User.username == username) | (User.handle == handle.lower())):
@@ -26,7 +26,8 @@ def new_user(db, username, handle, password, birthday, bio=""):
         'handle': handle.lower(),
         'friends': [],
         'birthday': birthday,
-        'bio': bio
+        'pfp': pfp,
+        'bio': bio,
     }
     return users.insert(user_record)
 

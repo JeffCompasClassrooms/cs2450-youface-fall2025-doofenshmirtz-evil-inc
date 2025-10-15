@@ -35,6 +35,7 @@ def profilescreen():
     birthday = user.get('birthday')
     age = users.calculate_age(birthday) if birthday else None
     handle = user.get('handle', f"@{username}")
+    pfp = user.get('pfp')
 
     return flask.render_template(
         'profile.html',
@@ -44,5 +45,6 @@ def profilescreen():
         handle=handle,
         birthday=birthday,
         age=age,
-        bio=bio
+        bio=bio,
+        pfp=pfp
     )
