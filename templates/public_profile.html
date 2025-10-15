@@ -2,7 +2,7 @@
 
 {% block content %}
   <div class="container">
-    <h1>@{{ profile_user.handle }}</h1>
+    <h1>@{{ profile_user['handle'] }}</h1>
     <h4>{{ subtitle }}</h4>
 
     {% if posts %}
