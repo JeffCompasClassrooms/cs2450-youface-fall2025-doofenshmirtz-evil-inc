@@ -18,6 +18,13 @@ def post():
         return flask.redirect(flask.url_for('login.loginscreen'))
 
     post = flask.request.form.get('post')
-    posts.add_post(db, user, post)
+    tags_raw = flask.request.form.get('tags', '').strip()
+
+    # Split on commas OR spaces
+    if ',' in tags_raw:
+        tags = [t.strip() for t in tags_raw.split(',') if t.strip()]
+    else:
+        tags = [t.strip() for t in tags_raw.split() if t.strip()]
+    posts.add_post(db, user, post, tags)
 
     return flask.redirect(flask.url_for('login.index'))
