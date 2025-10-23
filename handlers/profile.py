@@ -65,3 +65,25 @@ def profilescreen():
         following=following_count,
         friends=friend_count
     )
+
+@blueprint.route('/delete', methods=['POST'])
+def profile_delete():
+    """Delete the currently logged-in user."""
+    db = helpers.load_db()
+
+    username = flask.request.cookies.get('username')
+    password = flask.request.cookies.get('password')
+
+    if not username or not password:
+        return flask.redirect(flask.url_for('login.loginscreen'))
+
+    resp = flask.make_response(flask.redirect(flask.url_for('login.index')))
+
+    if users.delete_user(db, username, password):
+        resp.set_cookie('username', '', expires=0)
+        resp.set_cookie('password', '', expires=0)
+        flask.flash(f'User {username} deleted successfully!', 'success')
+    else:
+        flask.flash('Error deleting user. Please try again.', 'error')
+
+    return resp

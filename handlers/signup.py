@@ -6,7 +6,6 @@ from handlers import copy
 from db import posts, users, helpers
 
 PFPlist = [
-    "uploads/bird.png",
     "uploads/AgentC.png",
     "uploads/AgentD.png",
     "uploads/AgentH.png",
@@ -58,11 +57,7 @@ def signup_post():
             resp.set_cookie('birthday', '', expires=0)
             resp.set_cookie('pfp', '', expires=0)
             flask.flash(f'Username {username} already taken!', 'danger')
-            return flask.redirect(flask.url_for('login.loginscreen'))
+            return flask.redirect(flask.url_for('signup.signupscreen'))
         flask.flash(f'User {username} created successfully!', 'success')
-    elif submit == 'Delete' and users.delete_user(db, username, password):
-        resp.set_cookie('username', '', expires=0)
-        resp.set_cookie('password', '', expires=0)
-        flask.flash(f'User {username} deleted successfully!', 'success')
 
     return resp
