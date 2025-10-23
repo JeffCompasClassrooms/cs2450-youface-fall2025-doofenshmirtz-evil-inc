@@ -10,7 +10,7 @@ import tinydb
 
 from db import helpers
 
-YOUFACE_URL = "http://localhost:5000"
+YOUFACE_URL = "http://localhost:5006"
 
 def create_test_user(db, username, password, age):
     users = db.table('users')

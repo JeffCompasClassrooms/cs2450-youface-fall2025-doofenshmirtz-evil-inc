@@ -7,10 +7,7 @@ blueprint = flask.Blueprint("profile", __name__)
 
 @blueprint.route('/profilescreen', methods=['GET', 'POST'])
 def profilescreen():
-    """Display and allow editing of a user's profile."""
     db = helpers.load_db()
-
-    # Read credentials from cookies
     username = flask.request.cookies.get('username')
     password = flask.request.cookies.get('password')
 
@@ -21,7 +18,20 @@ def profilescreen():
     if not user:
         return flask.redirect(flask.url_for('login.loginscreen'))
 
-    # Handle form submission for editing bio
+    # Delete Account
+    if flask.request.method == 'POST' and 'delete' in flask.request.form:
+        confirm = flask.request.form.get('delete').strip().lower()
+        if confirm == 'delete':
+            users.delete_user(db, username, password)
+            flask.flash('Your account has been deleted.', 'success')
+            resp = flask.make_response(flask.redirect(flask.url_for('login.loginscreen')))
+            resp.set_cookie('username', '', expires=0)
+            resp.set_cookie('password', '', expires=0)
+            return resp
+        else:
+            flask.flash('Type "delete" to confirm account deletion.', 'warning')
+
+    # Update Bio
     if flask.request.method == 'POST':
         new_bio = flask.request.form.get('bio', '').strip()
         if new_bio != user.get('bio', ''):
@@ -37,6 +47,10 @@ def profilescreen():
     handle = user.get('handle', f"@{username}")
     pfp = user.get('pfp')
 
+    follower_count = len(user.get('followers', []))
+    following_count = len(user.get('following', []))
+    friend_count = len(user.get('friends', []))
+
     return flask.render_template(
         'profile.html',
         title=copy.title,
@@ -46,5 +60,8 @@ def profilescreen():
         birthday=birthday,
         age=age,
         bio=bio,
-        pfp=pfp
+        pfp=pfp,
+        followers=follower_count,
+        following=following_count,
+        friends=friend_count
     )

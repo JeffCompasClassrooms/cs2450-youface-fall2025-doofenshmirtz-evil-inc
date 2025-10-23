@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Friend Requests Section -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title">Pending Friend Requests</h3>
+
+      {% if requests %}
+        <div class="list-group">
+          {% for req in requests %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+              <span class="fw-bold">@{{ req }}</span>
+              <div class="btn-group">
+                <form method="post" action="{{ url_for('friends.respond_request') }}" class="d-inline">
+                  <input type="hidden" name="name" value="{{ req }}">
+                  <input type="hidden" name="action" value="accept">
+                  <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                </form>
+                <form method="post" action="{{ url_for('friends.respond_request') }}" class="d-inline">
+                  <input type="hidden" name="name" value="{{ req }}">
+                  <input type="hidden" name="action" value="decline">
+                  <button type="submit" class="btn btn-danger btn-sm">Decline</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted">You have no pending friend requests.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Current Friends Section -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title">My Friends</h3>
+
+      {% if friends %}
+        <div class="list-group">
+          {% for friend in friends %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <a href="{{ url_for('friends.view_friend', fname=friend.username) }}" class="fw-bold">@{{ friend.handle }}</a>
+                {% if friend.bio %}
+                  <p class="mb-0 text-muted small">{{ friend.bio }}</p>
+                {% endif %}
+              </div>
+              <div class="btn-group">
+                <form method="post" action="{{ url_for('friends.unfriend') }}" class="d-inline">
+                  <input type="hidden" name="name" value="{{ friend.username }}">
+                  <button type="submit" class="btn btn-outline-danger btn-sm">Unfriend</button>
+                </form>
+                <form method="post" action="{{ url_for('friends.block_user') }}" class="d-inline">
+                  <input type="hidden" name="name" value="{{ friend.username }}">
+                  <button type="submit" class="btn btn-outline-secondary btn-sm">Block</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted">You don’t have any friends yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}
