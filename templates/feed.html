@@ -61,7 +61,7 @@
       <div class="card mb-4 shadow-sm">
         <div class="card-body">
           <h5 class="card-title">Add Friend</h5>
-          <form method="post" action="/addfriend">
+          <form method="post" action="/send_request">
             <div class="form-group mb-2">
               <input type="text" class="form-control" name="name" placeholder="Username">
             </div>
@@ -78,7 +78,7 @@
           <ul class="list-group list-group-flush">
             {% for friend in friends %}
             <li class="list-group-item">
-              <a href="/@{{ friend.handle }}">{{ friend.handle }}</a>
+              <a href="{{ url_for('friends.view_friend', fname=friend['username']) }}" class="fw-bold">@{{ friend['username'] }}</a>
             </li>
             {% endfor %}
           </ul>

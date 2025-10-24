@@ -42,20 +42,20 @@
       {% if friends %}
         <div class="list-group">
           {% for friend in friends %}
+            {% set friend_username = friend.username if friend.username is defined else friend %}
+            {% set friend_handle = friend.handle if friend.handle is defined else friend %}
+            {% set friend_bio = friend.bio if friend.bio is defined else '' %}
+
             <div class="list-group-item d-flex justify-content-between align-items-center">
               <div>
-                <a href="{{ url_for('friends.view_friend', fname=friend.username) }}" class="fw-bold">@{{ friend.handle }}</a>
-                {% if friend.bio %}
-                  <p class="mb-0 text-muted small">{{ friend.bio }}</p>
+                <a href="{{ url_for('friends.view_friend', fname=friend_username) }}" class="fw-bold">@{{ friend_handle }}</a>
+                {% if friend_bio %}
+                  <p class="mb-0 text-muted small">{{ friend_bio }}</p>
                 {% endif %}
               </div>
               <div class="btn-group">
-                <form method="post" action="{{ url_for('friends.unfriend') }}" class="d-inline">
-                  <input type="hidden" name="name" value="{{ friend.username }}">
-                  <button type="submit" class="btn btn-outline-danger btn-sm">Unfriend</button>
-                </form>
-                <form method="post" action="{{ url_for('friends.block_user') }}" class="d-inline">
-                  <input type="hidden" name="name" value="{{ friend.username }}">
+                <form method="post" action="{{ url_for('friends.block') }}" class="d-inline">
+                  <input type="hidden" name="name" value="{{ friend_username }}">
                   <button type="submit" class="btn btn-outline-secondary btn-sm">Block</button>
                 </form>
               </div>

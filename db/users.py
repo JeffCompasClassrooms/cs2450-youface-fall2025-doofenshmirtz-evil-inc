@@ -80,58 +80,154 @@ def send_friend_request(db, from_user, to_user):
     """Send a friend request if not blocked or already friends."""
     users_table = db.table('users')
     User = Query()
-    sender = users_table.get(User.username == from_user)
+
+    sender = users_table.get(User.username == from_user['username'])
     receiver = users_table.get(User.username == to_user)
     if not sender or not receiver:
-        return False
+        return ("User not found.", "danger")
 
-    if to_user in sender.get('friends', []) or from_user in receiver.get('blocked_users', []):
-        return False
+    if to_user in sender.get('friends', []):
+        return ("You are already friends with this user.", "warning")
 
-    if from_user not in receiver.get('friend_requests', []):
-        receiver['friend_requests'].append(from_user)
-        users_table.update(receiver, User.username == to_user)
-    return True
+    if from_user['username'] in receiver.get('blocked_users', []):
+        return ("You cannot send a friend request to this user.", "danger")
+
+    if from_user['username'] in receiver.get('friend_requests', []):
+        return ("Friend request already sent.", "info")
+
+    receiver['friend_requests'].append(from_user['username'])
+    users_table.update(receiver, User.username == to_user)
+
+    return (f"Friend request sent to {to_user}!", "success")
+
 
 def accept_friend_request(db, from_user, to_user):
-    """Accept a friend request."""
+    """Accept a friend request between two users."""
     users_table = db.table('users')
     User = Query()
+
+    # Handle both username strings and user dicts
+    if isinstance(from_user, dict):
+        from_user = from_user.get('username')
+    if isinstance(to_user, dict):
+        to_user = to_user.get('username')
+
+    # Get sender (who sent request) and receiver (who accepts)
     sender = users_table.get(User.username == from_user)
     receiver = users_table.get(User.username == to_user)
+
     if not sender or not receiver:
-        return False
+        return (f"User not found (from_user={from_user}, to_user={to_user}).", "danger")
 
-    if from_user in receiver.get('friend_requests', []):
-        receiver['friend_requests'].remove(from_user)
+    if from_user not in receiver.get('friend_requests', []):
+        return (f"No pending friend request from {from_user}.", "warning")
+
+    # Remove from pending requests
+    receiver['friend_requests'].remove(from_user)
+
+    # Add to each other’s friends lists
+    if from_user not in receiver['friends']:
         receiver['friends'].append(from_user)
+    if to_user not in sender['friends']:
         sender['friends'].append(to_user)
-        users_table.update(receiver, User.username == to_user)
-        users_table.update(sender, User.username == from_user)
-    return True
 
-def block_user(db, blocker, blocked):
-    """Block a user and remove all connections between them."""
+    # Update DB
+    users_table.update(receiver, User.username == to_user)
+    users_table.update(sender, User.username == from_user)
+
+    return (f"You are now friends with {from_user}!", "success")
+
+
+def decline_friend_request(db, from_user, to_user):
+    """Decline a friend request."""
     users_table = db.table('users')
     User = Query()
-    blocker_user = users_table.get(User.username == blocker)
-    blocked_user = users_table.get(User.username == blocked)
-    if not blocker_user or not blocked_user:
-        return False
 
-    # Remove from all lists
-    for field in ['friends', 'followers', 'following', 'friend_requests']:
-        if blocked in blocker_user.get(field, []):
-            blocker_user[field].remove(blocked)
-        if blocker in blocked_user.get(field, []):
-            blocked_user[field].remove(blocker)
+    # Handle both username strings and user dicts
+    if isinstance(from_user, dict):
+        from_user = from_user.get('username')
+    if isinstance(to_user, dict):
+        to_user = to_user.get('username')
 
-    if blocked not in blocker_user.get('blocked_users', []):
-        blocker_user['blocked_users'].append(blocked)
+    sender = users_table.get(User.username == from_user)
+    receiver = users_table.get(User.username == to_user)
 
-    users_table.update(blocker_user, User.username == blocker)
-    users_table.update(blocked_user, User.username == blocked)
-    return True
+    if not sender or not receiver:
+        return (f"User not found (from_user={from_user}, to_user={to_user}).", "danger")
+
+    if from_user not in receiver.get('friend_requests', []):
+        return (f"No friend request to decline from {from_user}.", "warning")
+
+    receiver['friend_requests'].remove(from_user)
+    users_table.update(receiver, User.username == to_user)
+
+    return (f"Friend request from {from_user} declined.", "info")
+
+
+def unfriend_user(db, user, friend_name):
+    """Remove a friend from both users' friend lists."""
+    users_table = db.table('users')
+    User = Query()
+    current_user = users_table.get(User.username == user['username'])
+    friend = users_table.get(User.username == friend_name)
+
+    if not current_user or not friend:
+        return "User not found.", "danger"
+
+    if friend_name not in current_user.get('friends', []):
+        return "That user is not your friend.", "warning"
+
+    # Remove from both sides
+    current_user['friends'].remove(friend_name)
+    friend['friends'].remove(user['username'])
+
+    users_table.update(current_user, User.username == user['username'])
+    users_table.update(friend, User.username == friend_name)
+
+    return f"You unfriended {friend_name}.", "success"
+
+
+def block_user(db, current_user, target_username):
+    """Block another user and remove any friendship or requests."""
+    users_table = db.table('users')
+    User = Query()
+
+    blocker = users_table.get(User.username == current_user['username'])
+    target = users_table.get(User.username == target_username)
+
+    if not blocker or not target:
+        return False, 'User not found'
+
+    # Initialize block lists if missing
+    blocker.setdefault('blocked', [])
+    target.setdefault('blocked_by', [])
+
+    # If already blocked
+    if target_username in blocker['blocked']:
+        return False, 'User already blocked'
+
+    # Remove from friends if they are friends
+    if target_username in blocker.get('friends', []):
+        blocker['friends'].remove(target_username)
+    if blocker['username'] in target.get('friends', []):
+        target['friends'].remove(blocker['username'])
+
+    # Remove any pending friend requests between them
+    if target_username in blocker.get('friend_requests', []):
+        blocker['friend_requests'].remove(target_username)
+    if blocker['username'] in target.get('friend_requests', []):
+        target['friend_requests'].remove(blocker['username'])
+
+    # Add to block lists
+    blocker['blocked'].append(target_username)
+    target['blocked_by'].append(blocker['username'])
+
+    # Update both users
+    users_table.update(blocker, User.username == blocker['username'])
+    users_table.update(target, User.username == target['username'])
+
+    return True, f'User {target_username} has been blocked.'
+
 
 def delete_user(db, user):
     """Delete a user and clean up references."""
