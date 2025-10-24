@@ -9,42 +9,47 @@ def load_db():
 
 def get_user(db, username, password=None):
     """Retrieve a user, optionally validating password."""
+    users_table = db.table('users')
     User = Query()
-    user = db.get(User.username == username)
+    user = users_table.get(User.username == username)
     if not user:
         return None
     if password is not None and user.get('password') != password:
         return None
     return user
 
-def add_user(db, username, password_hash, birthday=None):
-    """Add a new user to the DB."""
+def new_user(db, username, handle, password, birthday, pfp, bio=""):
+    """Add a new user and return user dict."""
+    users_table = db.table('users')
     User = Query()
-    if db.contains(User.username == username):
-        return False
+    if users_table.get((User.username == username) | (User.handle == handle.lower())):
+        return None
 
-    db.insert({
+    user_record = {
         'username': username,
-        'password': password_hash,
+        'password': password,
         'birthday': birthday,
-        'bio': '',
-        'handle': f"@{username}",
-        'pfp': 'default_pfp.png',
+        'bio': bio,
+        'handle': handle,
+        'pfp': pfp,
         'friends': [],
         'followers': [],
         'following': [],
         'friend_requests': [],
         'blocked_users': []
-    })
-    return True
+    }
+
+    users_table.insert(user_record)
+    return user_record
 
 def update_user(db, username, updates):
     """Update a user's info."""
+    users_table = db.table('users')
     User = Query()
-    db.update(updates, User.username == username)
+    users_table.update(updates, User.username == username)
 
 def calculate_age(birthday_str):
-    """Calculate age from a stored birthday string (YYYY-MM-DD)."""
+    """Calculate age from a birthday string YYYY-MM-DD."""
     if not birthday_str:
         return None
     try:
@@ -55,41 +60,28 @@ def calculate_age(birthday_str):
     except ValueError:
         return None
 
-def delete_user(username):
-    """Delete a user and remove references to them from others."""
-    db = load_db()
+def get_user_friends(db, user):
+    """Return list of user dicts for friends of the given user."""
+    users_table = db.table('users')
     User = Query()
-    user = db.get(User.username == username)
-    if not user:
-        db.close()
-        return False
-
-    all_users = db.all()
-    for u in all_users:
-        changed = False
-
-        for field in ['friends', 'followers', 'following', 'friend_requests', 'blocked_users']:
-            if username in u.get(field, []):
-                u[field].remove(username)
-                changed = True
-
-        if changed:
-            db.update(u, Query().username == u['username'])
-
-    # Finally, remove the user
-    db.remove(User.username == username)
-    db.close()
-    return True
+    friends_list = []
+    for friend_username in user.get('friends', []):
+        friend = users_table.get(User.username == friend_username)
+        if friend:
+            friends_list.append(friend)
+    return friends_list
 
 def get_all_users(db):
     """Return all users."""
-    return db.all()
+    users_table = db.table('users')
+    return users_table.all()
 
 def send_friend_request(db, from_user, to_user):
     """Send a friend request if not blocked or already friends."""
+    users_table = db.table('users')
     User = Query()
-    sender = db.get(User.username == from_user)
-    receiver = db.get(User.username == to_user)
+    sender = users_table.get(User.username == from_user)
+    receiver = users_table.get(User.username == to_user)
     if not sender or not receiver:
         return False
 
@@ -98,14 +90,15 @@ def send_friend_request(db, from_user, to_user):
 
     if from_user not in receiver.get('friend_requests', []):
         receiver['friend_requests'].append(from_user)
-        db.update(receiver, User.username == to_user)
+        users_table.update(receiver, User.username == to_user)
     return True
 
 def accept_friend_request(db, from_user, to_user):
     """Accept a friend request."""
+    users_table = db.table('users')
     User = Query()
-    sender = db.get(User.username == from_user)
-    receiver = db.get(User.username == to_user)
+    sender = users_table.get(User.username == from_user)
+    receiver = users_table.get(User.username == to_user)
     if not sender or not receiver:
         return False
 
@@ -113,15 +106,16 @@ def accept_friend_request(db, from_user, to_user):
         receiver['friend_requests'].remove(from_user)
         receiver['friends'].append(from_user)
         sender['friends'].append(to_user)
-        db.update(receiver, User.username == to_user)
-        db.update(sender, User.username == from_user)
+        users_table.update(receiver, User.username == to_user)
+        users_table.update(sender, User.username == from_user)
     return True
 
 def block_user(db, blocker, blocked):
     """Block a user and remove all connections between them."""
+    users_table = db.table('users')
     User = Query()
-    blocker_user = db.get(User.username == blocker)
-    blocked_user = db.get(User.username == blocked)
+    blocker_user = users_table.get(User.username == blocker)
+    blocked_user = users_table.get(User.username == blocked)
     if not blocker_user or not blocked_user:
         return False
 
@@ -135,6 +129,29 @@ def block_user(db, blocker, blocked):
     if blocked not in blocker_user.get('blocked_users', []):
         blocker_user['blocked_users'].append(blocked)
 
-    db.update(blocker_user, User.username == blocker)
-    db.update(blocked_user, User.username == blocked)
+    users_table.update(blocker_user, User.username == blocker)
+    users_table.update(blocked_user, User.username == blocked)
+    return True
+
+def delete_user(db, user):
+    """Delete a user and clean up references."""
+    if not user:
+        return False
+
+    username = user['username']
+    users_table = db.table('users')
+    User = Query()
+
+    # Remove from other users' lists
+    for u in users_table.all():
+        changed = False
+        for field in ['friends', 'followers', 'following', 'friend_requests', 'blocked_users']:
+            if username in u.get(field, []):
+                u[field].remove(username)
+                changed = True
+        if changed:
+            users_table.update(u, User.username == u['username'])
+
+    # Remove the user itself
+    users_table.remove(User.username == username)
     return True
