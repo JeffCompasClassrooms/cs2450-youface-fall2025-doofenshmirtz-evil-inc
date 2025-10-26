@@ -229,16 +229,19 @@ def block_user(db, current_user, target_username):
     return True, f'User {target_username} has been blocked.'
 
 
+from tinydb import Query
+
 def delete_user(db, user):
+
     """Delete a user and clean up references."""
-    if not user:
+    if not user or 'username' not in user:
         return False
 
     username = user['username']
     users_table = db.table('users')
     User = Query()
 
-    # Remove from other users' lists
+    # Remove references from other users
     for u in users_table.all():
         changed = False
         for field in ['friends', 'followers', 'following', 'friend_requests', 'blocked_users']:
@@ -246,7 +249,16 @@ def delete_user(db, user):
                 u[field].remove(username)
                 changed = True
         if changed:
-            users_table.update(u, User.username == u['username'])
+            users_table.update(
+                {
+                    'friends': u.get('friends', []),
+                    'followers': u.get('followers', []),
+                    'following': u.get('following', []),
+                    'friend_requests': u.get('friend_requests', []),
+                    'blocked_users': u.get('blocked_users', [])
+                },
+                User.username == u['username']
+            )
 
     # Remove the user itself
     users_table.remove(User.username == username)
