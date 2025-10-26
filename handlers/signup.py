@@ -1,12 +1,10 @@
 import random
-
 import datetime 
 import flask
 from handlers import copy
 from db import posts, users, helpers
 
 PFPlist = [
-    "uploads/bird.png",
     "uploads/AgentC.png",
     "uploads/AgentD.png",
     "uploads/AgentH.png",
@@ -14,8 +12,7 @@ PFPlist = [
 ]
 
 def getRandomPFP():
-    newPFP = random.choice(PFPlist)
-    return newPFP
+    return random.choice(PFPlist)
 
 signup_blueprint = flask.Blueprint("signup", __name__)
 
@@ -44,25 +41,29 @@ def signup_post():
     handle = username 
     pfp = getRandomPFP() 
 
-    resp = flask.make_response(flask.redirect(flask.url_for('login.index')))
-    resp.set_cookie('username', username)
-    resp.set_cookie('password', password)
-    resp.set_cookie('birthday', birthday)
-    resp.set_cookie('pfp', pfp)
-
     submit = flask.request.form.get('type')
     if submit == 'Create Account':
-        if users.new_user(db, username, handle, password, birthday, pfp, "") is None:
+        # Attempt to create the user
+        new_user_record = users.new_user(db, username, handle, password, birthday, pfp, "")
+        if new_user_record is None:
+            # Username already taken
+            resp = flask.make_response(flask.redirect(flask.url_for('signup.signupscreen')))
             resp.set_cookie('username', '', expires=0)
             resp.set_cookie('password', '', expires=0)
             resp.set_cookie('birthday', '', expires=0)
             resp.set_cookie('pfp', '', expires=0)
             flask.flash(f'Username {username} already taken!', 'danger')
-            return flask.redirect(flask.url_for('login.loginscreen'))
-        flask.flash(f'User {username} created successfully!', 'success')
-    elif submit == 'Delete' and users.delete_user(db, username, password):
-        resp.set_cookie('username', '', expires=0)
-        resp.set_cookie('password', '', expires=0)
-        flask.flash(f'User {username} deleted successfully!', 'success')
+            return resp
 
-    return resp
+        # User created successfully
+        resp = flask.make_response(flask.redirect(flask.url_for('login.index')))
+        # Store cookies from the DB record (ensures consistency)
+        resp.set_cookie('username', new_user_record['username'])
+        resp.set_cookie('password', new_user_record['password'])
+        resp.set_cookie('birthday', new_user_record.get('birthday', ''))
+        resp.set_cookie('pfp', new_user_record.get('pfp', ''))
+        flask.flash(f'User {username} created successfully!', 'success')
+        return resp
+
+    # Fallback redirect if form type doesn't match
+    return flask.redirect(flask.url_for('signup.signupscreen'))

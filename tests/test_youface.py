@@ -14,7 +14,7 @@ class TestYouface(unittest.TestCase):
         # Hook up driver to browser
         driver = webdriver.Chrome(executable_path="./chromedriver")
         # Pull web page
-        driver.get("http://localhost:5000")
+        driver.get("http://localhost:5006")
 
         userinput = driver.find_element_by_name('username')
         userinput.send_keys("ren")

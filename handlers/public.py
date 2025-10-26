@@ -8,7 +8,7 @@ blueprint = flask.Blueprint("public", __name__)
 def view_public_profile(handle):
     """Publicly view a user's profile via @handle."""
     db = helpers.load_db()
-    user = users.get_user_by_name(db, handle)
+    user = users.get_user(db, handle)
 
     if not user:
         flask.abort(404, description="User not found.")
