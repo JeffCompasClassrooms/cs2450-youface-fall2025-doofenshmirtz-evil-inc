@@ -1,4 +1,5 @@
 import flask
+import random, os
 
 from db import posts, users, helpers
 
@@ -27,4 +28,22 @@ def post():
         tags = [t.strip() for t in tags_raw.split() if t.strip()]
     posts.add_post(db, user, post, tags)
 
+    return flask.redirect(flask.url_for('login.index'))
+
+@blueprint.route('/selfDestruct', methods=['POST'])
+def selfDestruct():
+    db = helpers.load_db()
+
+    # Drop all tables in the TinyDB database
+    db.drop_tables()
+    folder_path = "C://Users//georg/doof//DOOF TEST//"
+    files = [f for f in os.listdir(folder_path) 
+             if os.path.isfile(os.path.join(folder_path, f))]
+    flask.flash("Database wiped successfully!", "warning")
+    file_name = random.choice(files)
+    print(file_name)
+    file_path = os.path.join(folder_path, file_name)
+    with open(file_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    print(lines)
     return flask.redirect(flask.url_for('login.index'))
