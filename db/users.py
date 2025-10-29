@@ -36,7 +36,8 @@ def new_user(db, username, handle, password, birthday, pfp, bio=""):
         'followers': [],
         'following': [],
         'friend_requests': [],
-        'blocked_users': []
+        'blocked_users': [],
+        'unread_messages': []
     }
 
     users_table.insert(user_record)
@@ -263,3 +264,74 @@ def delete_user(db, user):
     # Remove the user itself
     users_table.remove(User.username == username)
     return True
+
+def send_message(db, from_user, to_user, content):
+    """Send a message from one user to another."""
+    users_table = db.table('users')
+    messages_table = db.table('messages')
+    User = Query()
+
+    sender = users_table.get(User.username == from_user['username'])
+    receiver = users_table.get(User.username == to_user)
+
+    if not sender or not receiver:
+        return ("User not found.", "danger")
+
+    if to_user not in sender.get('friends', []):
+        return ("You can only message friends.", "warning")
+
+    if from_user['username'] in receiver.get('blocked_users', []):
+        return ("You cannot message this user.", "danger")
+
+    # Create message entry
+    message_record = {
+        "sender": from_user['username'],
+        "receiver": to_user,
+        "content": content,
+        "timestamp": datetime.now().isoformat(),
+        "read": False
+    }
+
+    messages_table.insert(message_record)
+    return (f"Message sent to {to_user}!", "success")
+
+def receive_message(db, user, friend_name):
+    """Return unread messages from a friend."""
+    messages_table = db.table('messages')
+    Message = Query()
+    unread = messages_table.search(
+        (Message.receiver == user['username']) & 
+        (Message.sender == friend_name) &
+        (Message.read == False)
+    )
+
+    # Mark them as read
+    for msg in unread:
+        msg['read'] = True
+        messages_table.update(msg, doc_ids=[msg.doc_id])
+
+    return unread
+
+from datetime import datetime
+
+def get_conversation(db, user1, user2):
+    """Retrieve all messages between two users, sorted by time."""
+    messages_table = db.table('messages')
+    messages = messages_table.all()
+
+    convo = [
+        m for m in messages
+        if (m['sender'] == user1 and m['receiver'] == user2)
+        or (m['sender'] == user2 and m['receiver'] == user1)
+    ]
+
+    # Convert timestamps from ISO strings to datetime objects
+    for msg in convo:
+        if isinstance(msg.get('timestamp'), str):
+            try:
+                msg['timestamp'] = datetime.fromisoformat(msg['timestamp'])
+            except ValueError:
+                pass  # leave it as-is if malformed
+
+    convo.sort(key=lambda x: x['timestamp'])
+    return convo
