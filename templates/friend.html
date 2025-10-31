@@ -1,8 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% set friend_username = friend.username if friend.username is defined else friend %}
+{% set friend_handle = friend.handle if friend.handle is defined else friend %}
+{% set friend_bio = friend.bio if friend.bio is defined else '' %}
+
 <div class="row justify-content-md-center mb-4">
-  <h3 class="card-title">{{ friend }}</h3>
+  <h3 class="card-title">{{ friend_username }}</h3>
+</div>
+
+<div class="row justify-content-md-center mb-3">
+  <h3 class="card-subtitle">{{ friend_handle }}</h3>
+</div>
+
+<div class="row justify-content-md-center mb-3">
+  <h3 class="card-text">{{ friend_bio }}</h3>
 </div>
 
 <div class="row justify-content-md-center">

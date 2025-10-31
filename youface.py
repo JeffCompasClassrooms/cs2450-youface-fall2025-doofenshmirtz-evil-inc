@@ -7,7 +7,7 @@ import timeago
 import tinydb
 
 # handlers
-from handlers import friends, login, posts, public, signup, profile, chat
+from handlers import friends, login, posts, public, signup, profile, chat, chatpage
 
 app = flask.Flask(__name__)
 
@@ -24,6 +24,7 @@ app.register_blueprint(posts.blueprint)
 app.register_blueprint(profile.blueprint)
 app.register_blueprint(public.blueprint)
 app.register_blueprint(chat.blueprint)
+app.register_blueprint(chatpage.blueprint)
 
 
 app.secret_key = 'mygroup'

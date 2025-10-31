@@ -1,5 +1,4 @@
 import flask
-from handlers import copy
 from db import users, helpers
 
 blueprint = flask.Blueprint("chat", __name__)
