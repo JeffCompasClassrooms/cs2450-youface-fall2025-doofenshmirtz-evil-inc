@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Chat header -->
+  <div class="text-center mb-4">
+    <h2 class="fw-bold">{{ friend }}</h2>
+    <hr class="w-50 mx-auto">
+  </div>
+
+  <!-- Chat window -->
+  <div class="chat-box bg-light rounded-4 shadow-sm p-4 mb-4" style="max-height: 70vh; overflow-y: auto;">
+    {% if chats %}
+      {% for chat in chats %}
+        {% if chat.user == friend %}
+          <!-- Received message -->
+          <div class="d-flex mb-3">
+            <div class="p-3 rounded-3 bg-white shadow-sm" style="max-width: 75%;">
+              <p class="mb-1 text-dark">{{ chat.text }}</p>
+              <small class="text-muted">{{ chat.time|convert_time }}</small>
+            </div>
+          </div>
+        {% else %}
+          <!-- Sent message -->
+          <div class="d-flex justify-content-end mb-3">
+            <div class="p-3 rounded-3 bg-primary text-white shadow-sm" style="max-width: 75%;">
+              <p class="mb-1">{{ chat.text }}</p>
+              <small class="text-light-50">{{ chat.time|convert_time }}</small>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <p class="text-center text-muted fst-italic">No messages yet. Start the conversation!</p>
+    {% endif %}
+  </div>
+
+  <!-- Message input area -->
+  <form method="post" class="mt-3">
+    <div class="input-group">
+      <textarea id="message" name="message" class="form-control" rows="1" placeholder="Type your message..." maxlength="500" required></textarea>
+      <button type="submit" name="send_message_button" id="send_message_button" class="btn btn-primary px-4">
+        Send
+      </button>
+    </div>
+  </form>
+</div>
+
+<style>
+  /* Smooth scrollbar for chat area */
+  .chat-box::-webkit-scrollbar {
+    width: 6px;
+  }
+  .chat-box::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+  }
+  .chat-box {
+    scroll-behavior: smooth;
+  }
+  textarea {
+    resize: none;
+  }
+</style>
+{% endblock %}
