@@ -59,8 +59,8 @@ def profilescreen():
 
     return flask.render_template(
         'profile.html',
-        title=copy.title,
-        subtitle=copy.subtitle,
+        title="Profile-Inator",
+        subtitle="Everything about you",
         user=username,
         handle=handle,
         birthday=birthday,

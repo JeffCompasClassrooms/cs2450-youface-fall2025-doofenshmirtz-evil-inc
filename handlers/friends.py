@@ -158,7 +158,7 @@ def view_requests():
 
     return flask.render_template(
         'requests.html',
-        title="Friends & Requests",
+        title="Friend-Inators",
         subtitle="Manage your social connections",
         user=user,
         requests=pending,

@@ -40,6 +40,8 @@ def chatscreen(friend):
 
     return flask.render_template(
         'chat.html',
+        title='Chat-Inator',
+        subtitle=f'Chatting with {friend}',
         friend=friend,
         chats=formatted_chats
     )
