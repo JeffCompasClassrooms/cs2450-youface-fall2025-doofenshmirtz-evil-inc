@@ -7,15 +7,17 @@
   <div class="card mx-auto shadow p-4" style="max-width: 500px;">
     <img src="{{ url_for('static', filename=pfp) }}"
          class="rounded-circle mx-auto mb-3"
+         name="pfp"
+         id="pfp"
          alt="Profile Picture"
          width="150"
          height="150">
 
-    <h2 class="fw-bold">{{ user }}</h2>
-    <h5 class="text-muted">{{ handle }}</h5>
+    <h2 class="fw-bold" name="username_display" id="username_display">{{ user }}</h2>
+    <h5 class="text-muted" name="handle_display" id="handle_display">{{ handle }}</h5>
 
-    <p class="mt-3"><strong>Birthday:</strong> {{ birthday or 'Not set' }}</p>
-    <p><strong>Age:</strong> {{ age or 'Unknown' }}</p>
+    <p class="mt-3" name="birthday" id="birthday"><strong>Birthday:</strong> {{ birthday or 'Not set' }}</p>
+    <p name="age" id="age"><strong>Age:</strong> {{ age or 'Unknown' }}</p>
 
     <!-- Edit Bio Form -->
     <form method="post" class="mt-4">
@@ -24,7 +26,7 @@
         <textarea id="bio" name="bio" class="form-control" rows="3" maxlength="500"
                   placeholder="Tell the world about yourself...">{{ bio }}</textarea>
       </div>
-      <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+      <button type="submit" name ="save_button" id="save_button" class="btn btn-primary mt-3">Save Changes</button>
     </form>
 
     <!-- Delete Account -->
@@ -35,9 +37,9 @@
       </p>
       <form method="post">
         <div class="form-group">
-          <input type="text" id="delete" name="delete" class="form-control mb-2" placeholder="Type 'delete' to confirm">
+          <input type="text" id="delete_confirm" name="delete_confirm" class="form-control mb-2" placeholder="Type 'delete' to confirm">
         </div>
-        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+        <button type="submit" class="btn btn-danger" name="delete" id="delete">Confirm Delete</button>
       </form>
     </div>
 

@@ -30,7 +30,7 @@ def profilescreen():
             flask.flash('Profile updated successfully!', 'success')
 
         # Delete account
-        delete_input = flask.request.form.get('delete', '').strip().lower()
+        delete_input = flask.request.form.get('delete_confirm', '').strip().lower()
         if delete_input == 'delete':
             success = users.delete_user(db, user)
             if success:
@@ -59,8 +59,8 @@ def profilescreen():
 
     return flask.render_template(
         'profile.html',
-        title=copy.title,
-        subtitle=copy.subtitle,
+        title="Profile-Inator",
+        subtitle="Everything about you",
         user=username,
         handle=handle,
         birthday=birthday,

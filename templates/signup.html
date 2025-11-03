@@ -10,7 +10,7 @@
           <hr />
           <div class="form-group">
             <label for="username">Username*</label>
-            <input required type="text" class="form-control" name="username">
+            <input required type="text" class="form-control" name="username" id="username">
           </div>
           <div class="form-group">
             <label for="first_name">First Name*</label>
@@ -22,7 +22,7 @@
           </div>
           <div class="form-group">
             <label for="password">Password*</label>
-            <input required type="password" class="form-control" name="password">
+            <input required type="password" class="form-control" name="password" id="password">
           </div>
           <div class="form-group">
             <label for="password-confirm">Confirm Password*</label>
@@ -60,6 +60,21 @@
 <script>
   document.getElementById("signupForm").addEventListener("submit", function(event) {
     const birthdayInput = document.getElementById("birthday").value;
+    const usernameInput = document.getElementById("username").value;
+    const passwordInput = document.getElementById("password").value
+
+    if (!usernameInput) return;
+
+    if (!usernameInput.toLowerCase().includes("agent")) {
+      alert("You must have \"Agent\" in your username.")
+      event.preventDefault();
+    }
+
+    if (passwordInput.length > 5) {
+      alert("Your password cannot be more than 5 characters long.")
+      event.preventDefault();
+    }
+    
     if (!birthdayInput) return;
 
     const today = new Date();
