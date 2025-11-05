@@ -138,7 +138,7 @@ def view_friend(fname):
         subtitle=copy.subtitle,
         user=user,
         username=user['username'],
-        friend=friend['username'],
+        friend=friend,
         friends=users.get_user_friends(db, user),
         posts=all_posts
     )
@@ -158,7 +158,7 @@ def view_requests():
 
     return flask.render_template(
         'requests.html',
-        title="Friend-Inators",
+        title="Friends & Requests",
         subtitle="Manage your social connections",
         user=user,
         requests=pending,
