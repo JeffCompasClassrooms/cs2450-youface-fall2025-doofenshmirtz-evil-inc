@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-6 mx-auto">
+    <div class="card card-body bg-light">
+      <form method="post" action="/signup" id="signupForm">
+        <fieldset>
+          <legend>Sign up</legend>
+          <hr />
+          <div class="form-group">
+            <label for="username">Username*</label>
+            <input required type="text" class="form-control" name="username" id="username">
+          </div>
+          <div class="form-group">
+            <label for="first_name">First Name*</label>
+            <input required type="text" class="form-control" name="first_name">
+          </div>
+          <div class="form-group">
+            <label for="last">Last Name*</label>
+            <input required type="text" class="form-control" name="last_name">
+          </div>
+          <div class="form-group">
+            <label for="password">Password*</label>
+            <input required type="password" class="form-control" name="password" id="password">
+          </div>
+          <div class="form-group">
+            <label for="password-confirm">Confirm Password*</label>
+            <input required type="password" class="form-control" name="password-confirm">
+          </div>
+          <div class="form-group">
+            <label for="birthday">Birthday*</label>
+            <input required type="date" class="form-control" name="birthday" id="birthday">
+          </div>
+          <div class="form-group">
+            <input class="btn btn-success" type="submit" name="type" value="Create Account">
+            <a href = "/" class="btn btn-secondary" value="Back">Back</a>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--Confirm Password Logic-->
+<script>
+  document.getElementById("signupForm").addEventListener("submit", function(event) {
+    const password = document.querySelector('input[name="password"]').value;
+    const confirmPassword = document.querySelector('input[name="password-confirm"]').value;
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match. Please try again.");
+      event.preventDefault(); // Stop form from submitting
+    }
+  });
+</script>
+
+
+<!--Get the user's birthday, and calculate whether or not they are over the age of 13-->
+<script>
+  document.getElementById("signupForm").addEventListener("submit", function(event) {
+    const birthdayInput = document.getElementById("birthday").value;
+    const usernameInput = document.getElementById("username").value;
+    const passwordInput = document.getElementById("password").value
+
+    if (!usernameInput) return;
+
+    if (!usernameInput.toLowerCase().includes("agent")) {
+      alert("You must have \"Agent\" in your username.")
+      event.preventDefault();
+    }
+
+    if (passwordInput.length > 5) {
+      alert("Your password cannot be more than 5 characters long.")
+      event.preventDefault();
+    }
+    
+    if (!birthdayInput) return;
+
+    const today = new Date();
+    const birthday = new Date(birthdayInput);
+
+    let age = today.getFullYear() - birthday.getFullYear();
+    const monthDiff = today.getMonth() - birthday.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthday.getDate())) {
+      age--;
+    }
+
+    if (age < 13) {
+      alert("Sorry, you must be at least 13 years old to continue.");
+      event.preventDefault();
+    }
+
+    if (age > 100) {
+      alert("Sorry, the birthday you have selected makes you too old to continue.");
+      event.preventDefault();
+    }
+  });
+</script>
+{% endblock %}

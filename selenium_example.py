@@ -17,6 +17,7 @@ try:
 
     print("--= Beginning Tests =--")
     login_button = driver.find_element(By.CSS_SELECTOR, "input[type='submit'][value='Login']")
+    logout_button = driver.find_element(By.CSS_SELECTOR, "input[type='submit'][value='Logout']")
     copy = driver.find_element(By.CSS_SELECTOR, "p[class='lead']").text
 
     if copy == "A billion dollars and it's yours!":
@@ -28,6 +29,11 @@ try:
         print("[PASSED] - Login Button Exists.")
     else:
         print("[FAILED] - Login button not found.")
+
+    if logout_button:
+        print("[PASSED] - Logout Button Exists.")
+    else:
+        print("[FAILED] - Logout button not found.")
 
 except Exception as e:
     print("Error:", e)

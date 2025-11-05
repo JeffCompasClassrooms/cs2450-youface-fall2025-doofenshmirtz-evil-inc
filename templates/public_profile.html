@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h1>@{{ profile_user['handle'] }}</h1>
+    <h4>{{ subtitle }}</h4>
+
+    {% if posts %}
+      {% for post in posts %}
+        <div class="card my-3">
+          <div class="card-body">
+            <p class="card-text">{{ post.content }}</p>
+            <small class="text-muted">{{ post.timestamp | convert_time }}</small>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>This inventor hasn't posted anything yet.</p>
+    {% endif %}
+  </div>
+{% endblock %}
