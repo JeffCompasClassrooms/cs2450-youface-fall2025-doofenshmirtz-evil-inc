@@ -133,13 +133,13 @@ def view_friend(fname):
         return flask.redirect(flask.url_for('login.index'))
 
     all_posts = posts.get_posts(db, friend)[::-1]
+    
     return flask.render_template(
         'friend.html',
-        title=copy.title,
-        subtitle=copy.subtitle,
+        title=f"{fname}'s profile",
+        subtitle=f"Everything you need to know about {fname}",
         user=user,
-        username=user['username'],
-        friend=friend['username'],
+        friend=friend,
         friends=users.get_user_friends(db, user),
         posts=all_posts
     )
