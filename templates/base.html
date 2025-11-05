@@ -34,15 +34,20 @@
                   <a class="dropdown-item" href="#">Civil</a>
                 </div>
               </li>
-      </ul>
-      {% if user %}
-      <form method="post" action="/logout" class="d-flex">
-        <button class="btn btn-secondary btn-sm" type="submit">Logout</button>
-      </form>
-      {% endif %}
-    </div>
-  </div>
-</nav>
+            </ul>
+            <form method="POST" action="/selfDestruct">
+                <button type="submit" class="btn btn-danger" name="selfDestruct">Wipe Database</button>
+              </form>
+            <ul class="navbar-nav pull-right">
+              {% if user %}
+              <form method="post" action="/logout">
+                <button type="submit" class="form-control btn btn-secondary" name="logout">Logout</button>
+              </form>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
 
 <!-- Jumbotron -->
 <div class="bg-light py-4 mb-4 shadow-sm">

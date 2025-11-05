@@ -36,6 +36,7 @@ def send_request():
     db = helpers.load_db()
     user = get_logged_in_user(db)
     if not user:
+        flask.flash('You need to be logged in to do that.', 'danger')
         return flask.redirect(flask.url_for('login.loginscreen'))
 
     name = flask.request.form.get('name')
@@ -138,7 +139,7 @@ def view_friend(fname):
         subtitle=copy.subtitle,
         user=user,
         username=user['username'],
-        friend=friend,
+        friend=friend['username'],
         friends=users.get_user_friends(db, user),
         posts=all_posts
     )
@@ -158,7 +159,7 @@ def view_requests():
 
     return flask.render_template(
         'requests.html',
-        title="Friends & Requests",
+        title="Friend-Inators",
         subtitle="Manage your social connections",
         user=user,
         requests=pending,
