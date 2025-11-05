@@ -133,7 +133,8 @@ def view_friend(fname):
         return flask.redirect(flask.url_for('login.index'))
 
     all_posts = posts.get_posts(db, friend)[::-1]
-    
+    all_friends = users.get_user_friends(db, user)
+
     return flask.render_template(
         'friend.html',
         title=f"{fname}'s profile",
@@ -141,9 +142,9 @@ def view_friend(fname):
         user=user,
         friend=friend,
         friends=users.get_user_friends(db, user),
+        num_friends=len(all_friends or []),
         posts=all_posts
     )
-
 
 @blueprint.route('/requests')
 def view_requests():
