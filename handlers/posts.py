@@ -36,9 +36,6 @@ def selfDestruct():
 
     # Drop all tables in the TinyDB database
     db.drop_tables()
-    folder_path = "C://Users//georg/doof//DOOF TEST//"
-    files = [f for f in os.listdir(folder_path) 
-             if os.path.isfile(os.path.join(folder_path, f))]
     flask.flash("Database wiped successfully!", "warning")
     return flask.redirect(flask.url_for('posts.download_test'))
 
