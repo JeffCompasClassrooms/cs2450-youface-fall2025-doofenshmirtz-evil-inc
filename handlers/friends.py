@@ -36,6 +36,7 @@ def send_request():
     db = helpers.load_db()
     user = get_logged_in_user(db)
     if not user:
+        flask.flash('You need to be logged in to do that.', 'danger')
         return flask.redirect(flask.url_for('login.loginscreen'))
 
     name = flask.request.form.get('name')

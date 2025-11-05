@@ -1,18 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+ <!-- Welcome Header -->
+<div class="row justify-content-md-center mb-4">
+  <h1 class="">Welcome, {{username}}!</h1>
+</div>
+
+<button type="submit" class="btn btn-primary" name="post-submit">test</button>
+
 <div class="container mt-4">
-
-  <!-- Welcome Header -->
-  <div class="text-center mb-4">
-    <h1>Welcome, {{ username }}!</h1>
-  </div>
-
-  <div class="row">
-
     <!-- Main Feed Column -->
     <div class="col-lg-8">
-
       <!-- New Post Card -->
       <div class="card mb-4 shadow-sm">
         <div class="card-body">
