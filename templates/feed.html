@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="container mt-4">
 
- <!-- Welcome Header -->
-<div class="row justify-content-md-center mb-4">
-  <h1 class="">Welcome, {{username}}!</h1>
-</div>
+  <!-- Welcome Header -->
+  <div class="text-center mb-4">
+    <h1>Welcome, {{ username }}!</h1>
+  </div>
 
 
 <div class="container mt-4">
@@ -15,7 +16,7 @@
       <div class="card mb-4 shadow-sm">
         <div class="card-body">
           <h4 class="card-title">New Post</h4>
-          <form method="post" action="/post">
+          <form method="post" action="{{ url_for('posts.post') }}">
             <div class="form-group mb-2">
               <textarea class="form-control" name="post" rows="3" placeholder="What's on your mind?"></textarea>
             </div>

@@ -24,3 +24,19 @@
   transform: translateY(0);
   visibility: visible;
 }
+
+/* Hover Effects */
+.like-btn:hover, .bookmark-btn:hover {
+  opacity: 0.8;
+}
+
+/* Active state (already clicked) */
+.like-btn.active {
+  background-color: #007bff !important;
+  color: white;
+}
+
+.bookmark-btn.active {
+  background-color: #ffc107 !important;
+  color: white;
+}
