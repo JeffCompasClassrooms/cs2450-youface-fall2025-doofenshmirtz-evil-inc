@@ -6,7 +6,10 @@
 {% set friend_handle = friend.handle if friend.handle is defined else friend %}
 {% set friend_bio = friend.bio if friend.bio is defined else '' %}
 {% set friend_profile_pic = friend.pfp if friend.pfp is defined else 'uploads/AgentC.png' %}
-{% set num_friends = num_friends if num_friends is defined else '888' %}
+{% set num_friends = num_friends if num_friends is defined else '0' %}
+{% set num_followers = num_followers if num_followers is defined else '0' %}
+{% set num_following = num_following if num_following is defined else '0' %}
+
 
 <div class="row justify-content-center my-5">
   <div class="col-md-8 text-center">
@@ -42,12 +45,24 @@
 <div class="row justify-content-center my-5">
   <div class="col-md-8 text-center">
     <div class="card shadow-lg border-0 rounded-4 p-4 bg-light position-relative">
-      <div class="d-flex flex-column align-items-center mt-2">
-        <h4 class="fw-bold mb-0">Friends: {{ num_friends }}</h4>
+      <div class="d-flex justify-content-center mt-2 gap-4">
+        <!-- Friends Box -->
+        <div class="bg-white shadow-sm rounded-3 p-3 flex-fill">
+          <h4 class="fw-bold mb-0">Friends: {{ num_friends }}</h4>
+        </div>
+        <!-- Followers Box -->
+        <div class="bg-white shadow-sm rounded-3 p-3 flex-fill">
+          <h4 class="fw-bold mb-0">Followers: {{ num_followers }}</h4>
+        </div>
+        <!-- Following Box -->
+        <div class="bg-white shadow-sm rounded-3 p-3 flex-fill">
+          <h4 class="fw-bold mb-0">Following: {{ num_following }}</h4>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
 
 <div class="row justify-content-md-center">
   <div class="col col-lg-8">

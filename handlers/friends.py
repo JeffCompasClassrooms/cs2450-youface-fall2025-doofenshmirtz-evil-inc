@@ -12,7 +12,7 @@ def get_logged_in_user(db):
         return None
     return users.get_user(db, username, password)
 
-
+# Follow another user
 @blueprint.route('/follow', methods=['POST'])
 def follow():
     db = helpers.load_db()
@@ -134,6 +134,8 @@ def view_friend(fname):
 
     all_posts = posts.get_posts(db, friend)[::-1]
     all_friends = users.get_user_friends(db, user)
+    all_followers = users.get_user_followers(db, user)
+    all_following = users.get_user_following(db, user)
 
     return flask.render_template(
         'friend.html',
@@ -143,6 +145,8 @@ def view_friend(fname):
         friend=friend,
         friends=users.get_user_friends(db, user),
         num_friends=len(all_friends or []),
+        num_followers=len(all_followers or []),
+        num_following=len(all_following),
         posts=all_posts
     )
 

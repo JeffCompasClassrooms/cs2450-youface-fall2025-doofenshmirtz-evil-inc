@@ -72,10 +72,54 @@ def get_user_friends(db, user):
             friends_list.append(friend)
     return friends_list
 
+def get_user_followers(db, user):
+    """Return list of user dicts for followers of the given user"""
+    users_table = db.table('users')
+    User = Query()
+    followers_list = []
+    for follower_username in user.get('followers', []):
+        follower = users_table.get(User.username == follower_username)
+        if follower:
+            followers_list.append(follower)
+    return followers_list
+
+def get_user_following(db, user):
+    """Return list of user dicts for followers of the given user"""
+    users_table = db.table('users')
+    User = Query()
+    following_list = []
+    for following_username in user.get('followers', []):
+        follower = users_table.get(User.username == following_username)
+        if follower:
+            following_list.append(follower)
+    return following_list
+
 def get_all_users(db):
     """Return all users."""
     users_table = db.table('users')
     return users_table.all()
+
+def follow_user(db, from_user, to_user):
+    """Follow another user if not blocked or already following"""
+    users_table = db.table('users')
+    User = Query()
+
+    sender = users_table.get(User.username == from_user['username'])
+    receiver = users_table.get(User.username == to_user)
+    if not sender or not receiver:
+        return ("No User found." "danger")
+    
+    if to_user in sender.get('followers', []):
+        return (f"You are already following {to_user}." "warning")
+    
+    if from_user in receiver.get('blocked_users', []):
+        return ("You cannot follow this user.", "danger")
+    
+    receiver['followers'].append(from_user['username'])
+    sender['following'].append(to_user['username'])
+    users_table.update(receiver, User.username == to_user)
+
+    return (f"Successfully following {to_user}!", "success")
 
 def send_friend_request(db, from_user, to_user):
     """Send a friend request if not blocked or already friends."""
