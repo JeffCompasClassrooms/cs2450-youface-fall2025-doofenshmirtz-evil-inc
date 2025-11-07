@@ -1,0 +1,19 @@
+{
+
+    "users": {
+
+        "1": {
+
+            "age": null,
+
+            "friends": [],
+
+            "password": "test",
+
+            "username": "test"
+
+        }
+
+    }
+
+}

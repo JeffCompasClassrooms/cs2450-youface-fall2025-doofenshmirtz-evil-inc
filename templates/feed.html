@@ -8,11 +8,10 @@
     <h1>Welcome, {{ username }}!</h1>
   </div>
 
-  <div class="row">
 
+<div class="container mt-4">
     <!-- Main Feed Column -->
     <div class="col-lg-8">
-
       <!-- New Post Card -->
       <div class="card mb-4 shadow-sm">
         <div class="card-body">
@@ -31,17 +30,14 @@
 
       <!-- Feed Posts -->
       <h3 class="mb-3">My Feed</h3>
-
       {% for post in posts %}
       <div class="card mb-3 shadow-sm">
         <div class="card-body">
           <h5>
-            <a href="/@{{ post.handle }}">@{{ post.user }}</a>
+            <a href="/@{{ post.handle }}">@{{ post.handle }}</a>
           </h5>
           <small class="text-muted">{{ post.time|convert_time }}</small>
-
-          <p class="mt-2">{{ post.text or post.post }}</p>
-
+          <p class="mt-2">{{ post.text }}</p>
           {% if post.tags %}
           <p>
             <small>Tags:
@@ -51,34 +47,6 @@
             </small>
           </p>
           {% endif %}
-
-          <!-- LIKE BUTTON -->
-          <form class="d-inline like-form" data-post-id="{{ post.doc_id }}" action="{{ url_for('posts.like', post_id=post.doc_id) }}" method="post">
-            <button type="submit" class="btn btn-sm like-btn {% if post.liked %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                Like (<span class="like-count">{{ post.likes }}</span>)
-            </button>
-          </form>
-
-          <!-- BOOKMARK BUTTON -->
-          <form class="d-inline bookmark-form" data-post-id="{{ post.doc_id }}" action="{{ url_for('posts.bookmark', post_id=post.doc_id) }}" method="post">
-            <button type="submit" class="btn btn-sm bookmark-btn {% if post.bookmarked %}btn-warning{% else %}btn-outline-warning{% endif %}">
-                Bookmark
-            </button>
-          </form>
-
-
-          <!-- COMMENT FORM -->
-          <form method="post" action="{{ url_for('posts.comment', post_id=post.doc_id) }}" class="mt-2">
-            <div class="input-group">
-              <input type="text" name="comment" class="form-control" placeholder="Write a comment...">
-              <button type="submit" class="btn btn-primary btn-sm">Post</button>
-            </div>
-          </form>
-
-          <!-- VIEW COMMENTS -->
-          <a href="{{ url_for('posts.view_post', post_id=post.doc_id) }}" class="btn btn-sm btn-link mt-1">
-            View Comments ({{ post.comments|length|default(0) }})
-          </a>
         </div>
       </div>
       {% endfor %}
@@ -88,19 +56,7 @@
     <!-- Sidebar Column -->
     <div class="col-lg-4">
 
-      <!-- View Liked/Bookmarked Posts -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-body text-center">
-          <a href="{{ url_for('posts.view_liked_posts') }}" class="btn btn-outline-primary mb-2 w-100">
-            View Liked Posts
-          </a>
-          <a href="{{ url_for('posts.view_bookmarked_posts') }}" class="btn btn-outline-warning w-100">
-            View Bookmarked Posts
-          </a>
-        </div>
-      </div>
-
-      <!-- Add Friend Card -->
+      <!-- Add Friend -->
       <div class="card mb-4 shadow-sm">
         <div class="card-body">
           <h5 class="card-title">Add Friend</h5>
@@ -117,7 +73,7 @@
       <div class="card shadow-sm">
         <div class="card-body">
           <h5 class="card-title">My Friends</h5>
-          {% if friends is defined and friends %}
+          {% if friends %}
           <ul class="list-group list-group-flush">
             {% for friend in friends %}
             <li class="list-group-item">
@@ -136,8 +92,3 @@
 
 </div>
 {% endblock %}
-
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/like_bookmark.js') }}"></script>
-{% endblock %}
-
