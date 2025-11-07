@@ -4,7 +4,6 @@ from db import posts, users, helpers
 
 blueprint = flask.Blueprint("friends", __name__)
 
-
 def get_logged_in_user(db):
     username = flask.request.cookies.get('username')
     password = flask.request.cookies.get('password')
@@ -161,6 +160,8 @@ def view_requests():
 
     pending = user.get('friend_requests', [])
     current_friends = users.get_user_friends(db, user)
+    current_followers = users.get_user_followers(db, user)
+    current_following = users.get_user_following(db, user)
 
     return flask.render_template(
         'requests.html',
@@ -168,5 +169,7 @@ def view_requests():
         subtitle="Manage your social connections",
         user=user,
         requests=pending,
-        friends=current_friends
+        friends=current_friends,
+        followers = current_followers,
+        following = current_following
     )

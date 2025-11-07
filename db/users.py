@@ -88,7 +88,7 @@ def get_user_following(db, user):
     users_table = db.table('users')
     User = Query()
     following_list = []
-    for following_username in user.get('followers', []):
+    for following_username in user.get('following', []):
         follower = users_table.get(User.username == following_username)
         if follower:
             following_list.append(follower)
@@ -106,20 +106,28 @@ def follow_user(db, from_user, to_user):
 
     sender = users_table.get(User.username == from_user['username'])
     receiver = users_table.get(User.username == to_user)
+
     if not sender or not receiver:
-        return ("No User found." "danger")
-    
-    if to_user in sender.get('followers', []):
-        return (f"You are already following {to_user}." "warning")
-    
-    if from_user in receiver.get('blocked_users', []):
+        return ("No user found.", "danger")
+
+    # Check if already following 
+    if to_user in sender.get('following', []):
+        return (f"You are already following {to_user}.", "warning")
+
+    # Check if blocked
+    if sender['username'] in receiver.get('blocked_users', []):
         return ("You cannot follow this user.", "danger")
-    
-    receiver['followers'].append(from_user['username'])
-    sender['following'].append(to_user['username'])
-    users_table.update(receiver, User.username == to_user)
+
+    # Add follow
+    receiver['followers'].append(sender['username'])
+    sender['following'].append(receiver['username'])
+
+    # Update DB properly
+    users_table.update({'followers': receiver['followers']}, User.username == receiver['username'])
+    users_table.update({'following': sender['following']}, User.username == sender['username'])
 
     return (f"Successfully following {to_user}!", "success")
+
 
 def send_friend_request(db, from_user, to_user):
     """Send a friend request if not blocked or already friends."""
@@ -262,6 +270,17 @@ def block_user(db, current_user, target_username):
         blocker['friend_requests'].remove(target_username)
     if blocker['username'] in target.get('friend_requests', []):
         target['friend_requests'].remove(blocker['username'])
+
+    # Remove from each other’s followers/following lists safely
+    if target_username in blocker.get('followers', []):
+        blocker['followers'].remove(target_username)
+    if blocker['username'] in target.get('following', []):
+        target['following'].remove(blocker['username'])
+
+    if target_username in blocker.get('following', []):
+        blocker['following'].remove(target_username)
+    if blocker['username'] in target.get('followers', []):
+        target['followers'].remove(blocker['username'])
 
     # Add to block lists
     blocker['blocked'].append(target_username)
