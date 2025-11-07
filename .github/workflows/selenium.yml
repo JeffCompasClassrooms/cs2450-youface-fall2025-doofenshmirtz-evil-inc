@@ -42,3 +42,4 @@ jobs:
         run: |
           python selenium_example.py
           python test_login_page.py
+          python test_profile_page.py
