@@ -43,7 +43,8 @@ def chatscreen(friend):
         title='Chat-Inator',
         subtitle=f'Chatting with {friend}',
         friend=friend,
-        chats=formatted_chats
+        chats=formatted_chats,
+        user=user
     )
 
     

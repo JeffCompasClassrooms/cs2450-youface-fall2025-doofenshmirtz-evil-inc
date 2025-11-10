@@ -24,4 +24,5 @@ def chatpage():
     return flask.render_template("chatpage.html", 
                                  title="Chat-Inator",
                                  subtitle="Chat with your friends!",
-                                 friends=friends)
+                                 friends=friends,
+                                 user=user)
