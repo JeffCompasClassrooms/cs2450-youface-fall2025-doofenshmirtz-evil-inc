@@ -104,10 +104,15 @@ try:
         username_cookie = driver.get_cookie("username")
         password_cookie = driver.get_cookie("password")
 
-        if username_cookie and password_cookie:
-            print("[PASSED] - Cookies for username and password set.")
+        if username_cookie:
+            print("[PASSED] - Cookie for username set")
         else:
-            print("[FAILED] - Cookies not set after login.")
+            print("[FAILED] - Username cookie not set after login.")
+
+        if password_cookie:
+            print("[PASSED] - Cookie for password set")
+        else:
+            print("[FAILED] - Password cookie not set after login.")
 
     except Exception as e:
         print("[FAILED] - Login test failed:", e)
