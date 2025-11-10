@@ -36,6 +36,7 @@ def signup_post():
     username = flask.request.form.get('username')
     password = flask.request.form.get('password')
     birthday = flask.request.form.get('birthday')
+    engineering_preference = flask.request.form.get('engineering_preference')
 
     # Use username as the handle if none provided in form
     handle = username 
@@ -44,7 +45,7 @@ def signup_post():
     submit = flask.request.form.get('type')
     if submit == 'Create Account':
         # Attempt to create the user
-        new_user_record = users.new_user(db, username, handle, password, birthday, pfp, "")
+        new_user_record = users.new_user(db, username, handle, password, birthday, pfp, engineering_preference, "")
         if new_user_record is None:
             # Username already taken
             resp = flask.make_response(flask.redirect(flask.url_for('signup.signupscreen')))

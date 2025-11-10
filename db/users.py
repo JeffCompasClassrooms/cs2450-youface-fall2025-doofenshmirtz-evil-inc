@@ -18,7 +18,7 @@ def get_user(db, username, password=None):
         return None
     return user
 
-def new_user(db, username, handle, password, birthday, pfp, bio=""):
+def new_user(db, username, handle, password, birthday, pfp, engineering_preference, bio=""):
     """Add a new user and return user dict."""
     users_table = db.table('users')
     User = Query()
@@ -32,6 +32,7 @@ def new_user(db, username, handle, password, birthday, pfp, bio=""):
         'bio': bio,
         'handle': handle,
         'pfp': pfp,
+        'engineering_preference': engineering_preference,
         'friends': [],
         'followers': [],
         'following': [],

@@ -50,6 +50,7 @@ def profilescreen():
     birthday = user.get('birthday')
     age = users.calculate_age(birthday) if birthday else None
     handle = user.get('handle', f"@{username}")
+    engineering_preference = user.get('engineering_preference', '')
     pfp = user.get('pfp', 'uploads/default.png')  # fallback
 
     # Friends and followers
@@ -65,6 +66,7 @@ def profilescreen():
         handle=handle,
         birthday=birthday,
         age=age,
+        engineering_preference = engineering_preference,
         bio=bio,
         pfp=pfp,
         friends=friends_list,
