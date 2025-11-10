@@ -21,19 +21,6 @@
         <li class="nav-item"><a class="nav-link" href="{{ url_for('friends.view_requests') }}">Friends</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ url_for('chatpage.chatpage') }}">Chat</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.profilescreen') }}">Profile</a></li>
-        <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="moreDropdown" role="button"
-                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Discover
-                </a>
-                <div class="dropdown-menu dropdown-animated" aria-labelledby="moreDropdown">
-                  <a class="dropdown-item" href="#">Mechanical</a>
-                  <a class="dropdown-item" href="#">Electrical</a>
-                  <a class="dropdown-item" href="#">Software</a>
-                  <a class="dropdown-item" href="#">Computer</a>
-                  <a class="dropdown-item" href="#">Civil</a>
-                </div>
-              </li>
             </ul>
             <form method="POST" action="/selfDestruct">
                 <button type="submit" class="btn btn-danger" name="selfDestruct">Wipe Database</button>
@@ -74,6 +61,7 @@
 <!-- Main Content -->
 <div class="container">
   {% block content %}{% endblock %}
+  {% block scripts %}{% endblock %}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

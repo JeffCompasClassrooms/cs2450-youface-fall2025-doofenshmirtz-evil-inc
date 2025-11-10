@@ -3,6 +3,7 @@ import datetime
 import flask
 from handlers import copy
 from db import posts, users, helpers
+import zxcvbn
 
 PFPlist = [
     "uploads/AgentC.png",
@@ -42,6 +43,12 @@ def signup_post():
     handle = username 
     pfp = getRandomPFP() 
 
+    password_strength = zxcvbn.zxcvbn(password)
+    print(f"[PASSWORD STRENGTH = {password_strength}]")
+    if password_strength['score'] >= 1:
+        flask.flash("Your password is too hard to guess! Please choose a easier one.", "danger")
+        return flask.redirect(flask.url_for('signup.signupscreen'))
+    
     submit = flask.request.form.get('type')
     if submit == 'Create Account':
         # Attempt to create the user

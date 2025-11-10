@@ -70,16 +70,30 @@ def index():
         flask.flash('Invalid credentials. Please try again.', 'danger')
         return flask.redirect(flask.url_for('login.loginscreen'))
 
+    # Get friends list
     friends_list = users.get_user_friends(db, user)
+
+    # Fetch posts from user + friends
     all_posts = []
     for friend in friends_list + [user]:
-        all_posts += posts.get_posts(db, friend)
+        friend_posts = posts.get_posts(db, friend)
+        for post in friend_posts:
+            # Mark if current user liked/bookmarked the post
+            post['liked'] = username in post.get('likes', [])
+            post['bookmarked'] = username in post.get('bookmarks', [])
+            post['likes'] = len(post.get('likes', []))
+            post['comments'] = post.get('comments', [])
+        all_posts += friend_posts
 
+    # Sort posts newest first
     sorted_posts = sorted(all_posts, key=lambda post: post['time'], reverse=True)
 
-    return flask.render_template('feed.html', title=copy.title,
-                                 subtitle=copy.subtitle,
-                                 user=user,
-                                 username=username,
-                                 friends=friends_list,
-                                 posts=sorted_posts)
+    return flask.render_template(
+        'feed.html',
+        title=copy.title,
+        subtitle=copy.subtitle,
+        user=user,
+        username=username,
+        friends=friends_list,
+        posts=sorted_posts
+    )
