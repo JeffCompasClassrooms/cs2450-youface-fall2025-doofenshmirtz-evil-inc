@@ -25,5 +25,4 @@ jobs:
 
       - name: Run Selenium tests
         run: |
-          pytest tests/ --headless
-
+          pytest tests/
