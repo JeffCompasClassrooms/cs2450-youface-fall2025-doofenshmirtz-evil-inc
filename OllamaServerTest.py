@@ -1,37 +1,37 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify
 import requests
-import json
 
 app = Flask(__name__)
-MODEL = "deepseek-r1:latest"
+MODEL = "deepseek-r1:14b"
+
+API_KEY = ")@W^utYCh:2A|RR(bT%_0!nhvLjP{tD|L:Lo.x*P:ouncm[G'5=w]yMpEPJ@c7D"
+
+def require_api_key(req):
+    key = req.headers.get("X-API-Key")
+    return key == API_KEY
 
 @app.route("/generate", methods=["POST"])
 def generate():
+    if not require_api_key(request):
+        return jsonify({"error": "unauthorized"}), 401
+
     data = request.json or {}
     prompt = data.get("prompt", "")
     if not prompt:
         return jsonify({"error": "no prompt provided"}), 400
 
     try:
-        # Use streaming mode
-        with requests.post(
+        r = requests.post(
             "http://127.0.0.1:11434/api/generate",
-            json={"model": MODEL, "prompt": prompt},
-            stream=True,
-        ) as r:
-            r.raise_for_status()
-            full_text = ""
-            for line in r.iter_lines():
-                if not line:
-                    continue
-                try:
-                    data = json.loads(line)
-                    if "response" in data:
-                        full_text += data["response"]
-                except json.JSONDecodeError:
-                    continue
-
-            return jsonify({"response": full_text})
+            json={
+                "model": MODEL,
+                "prompt": prompt,
+                "stream": False
+            },
+            timeout=300
+        )
+        r.raise_for_status()
+        return jsonify(r.json())
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
