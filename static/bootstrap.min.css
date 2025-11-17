@@ -27,8 +27,8 @@
     --white: #fff;
     --gray: #888;
     --gray-dark: #333;
-    --primary: #008cba;
-    --secondary: #eee;
+    --primary: #39FF14;
+    --secondary: #9A9A9A;
     --success: #43ac6a;
     --info: #5bc0de;
     --warning: #E99002;
@@ -586,7 +586,7 @@ pre code {
     padding-right: 15px;
     padding-left: 15px;
     margin-right: auto;
-    margin-left: auto
+    margin-left: auto;
 }
 
 @media (min-width: 576px) {
@@ -5048,7 +5048,8 @@ input[type="button"].btn-block {
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
-    padding: 0.5rem 1rem
+    padding: 0.5rem 1rem;
+    background-color: var(--primary)
 }
 
 .navbar .container,
@@ -5077,7 +5078,8 @@ input[type="button"].btn-block {
     margin-right: 1rem;
     font-size: 1.171875rem;
     line-height: inherit;
-    white-space: nowrap
+    white-space: nowrap;
+    background-color: #39FF14;
 }
 
 .navbar-brand:hover,

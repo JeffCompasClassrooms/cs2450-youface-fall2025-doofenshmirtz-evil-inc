@@ -57,6 +57,7 @@ def profilescreen():
     friends_list = users.get_user_friends(db, user)
     num_friends = len(friends_list)
     num_followers = len(user.get('followers', []))
+    num_following = len(user.get('following', []))
 
     return flask.render_template(
         'profile.html',
@@ -71,5 +72,6 @@ def profilescreen():
         pfp=pfp,
         friends=friends_list,
         num_friends=num_friends,
-        num_followers=num_followers
+        num_followers=num_followers,
+        num_following=num_following
     )

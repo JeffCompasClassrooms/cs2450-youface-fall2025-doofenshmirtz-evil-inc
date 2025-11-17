@@ -10,6 +10,7 @@
         }
     }
 }
+
 .dropdown-animated { /*refers to the dropdown menu in the navbar. see base.html*/
   display: block;
   opacity: 0;
@@ -23,4 +24,20 @@
   opacity: 1;
   transform: translateY(0);
   visibility: visible;
+}
+
+/* Hover Effects */
+.like-btn:hover, .bookmark-btn:hover {
+  opacity: 0.8;
+}
+
+/* Active state (already clicked) */
+.like-btn.active {
+  background-color: #007bff !important;
+  color: white;
+}
+
+.bookmark-btn.active {
+  background-color: #ffc107 !important;
+  color: white;
 }
