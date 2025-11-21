@@ -11,16 +11,32 @@
       {% if requests %}
         <div class="list-group">
           {% for req in requests %}
+            {% set req_pfp = req.pfp if req.pfp is defined else 'uploads/AgentC.png' %}
+            {% set req_handle = req.handle if req.handle is defined else '' %}
+            {% set req_username = req.username if req.username is defined else '' %}
             <div class="list-group-item d-flex justify-content-between align-items-center">
-              <span class="fw-bold">@{{ req }}</span>
+              <div class="d-flex align-items-center">
+                <img src="{{ url_for('static', filename=req_pfp.replace('static/', '')) }}"
+                     class="rounded-circle me-3"
+                     style="width: 45px; height: 45px; object-fit: cover;">
+                <a href="{{ url_for('friends.view_friend', fname=req_handle) }}" class="fw-bold">
+                    @{{ req_handle }}
+                  </a>
+              </div>
+
               <div class="btn-group">
                 <form method="post" action="{{ url_for('friends.respond_request') }}" class="d-inline">
-                  <input type="hidden" name="name" value="{{ req }}">
+                  <!-- who sent the request -->
+                  <input type="hidden" name="name" value="{{ req_username }}">
+                  <!-- who is receiving/accepting (current user) -->
+                  <input type="hidden" name="req" value="{{ user.username }}">
                   <input type="hidden" name="action" value="accept">
                   <button type="submit" class="btn btn-success btn-sm">Accept</button>
                 </form>
+
                 <form method="post" action="{{ url_for('friends.respond_request') }}" class="d-inline">
-                  <input type="hidden" name="name" value="{{ req }}">
+                  <input type="hidden" name="name" value="{{ req_username }}">
+                  <input type="hidden" name="req" value="{{ user.username }}">
                   <input type="hidden" name="action" value="decline">
                   <button type="submit" class="btn btn-danger btn-sm">Decline</button>
                 </form>
@@ -35,7 +51,7 @@
   </div>
 
   <!-- Current Friends Section -->
-  <div class="card shadow-sm">
+  <div class="card shadow-sm mb-4">
     <div class="card-body">
       <h3 class="card-title">My Friends</h3>
 
@@ -45,17 +61,24 @@
             {% set friend_username = friend.username if friend.username is defined else friend %}
             {% set friend_handle = friend.handle if friend.handle is defined else friend %}
             {% set friend_bio = friend.bio if friend.bio is defined else '' %}
+            {% set friend_pfp = friend.pfp if friend.pfp is defined else 'uploads/default_pfp.png' %}
 
             <div class="list-group-item d-flex justify-content-between align-items-center">
-              <div>
-                <a href="{{ url_for('friends.view_friend', fname=friend_handle) }}" class="fw-bold">
-                  @{{ friend_handle }}
-                </a>
+              <div class="d-flex align-items-center">
+                <img src="{{ url_for('static', filename=friend_pfp.replace('static/', '')) }}"
+                     class="rounded-circle me-3"
+                     style="width: 45px; height: 45px; object-fit: cover;">
 
-                {% if friend_bio %}
-                  <p class="mb-0 text-muted small">{{ friend_bio }}</p>
-                {% endif %}
+                <div>
+                  <a href="{{ url_for('friends.view_friend', fname=friend_handle) }}" class="fw-bold">
+                    @{{ friend_handle }}
+                  </a>
+                  {% if friend_bio %}
+                    <p class="mb-0 text-muted small">{{ friend_bio }}</p>
+                  {% endif %}
+                </div>
               </div>
+
               <div class="btn-group">
                 <form method="post" action="{{ url_for('friends.block') }}" class="d-inline">
                   <input type="hidden" name="name" value="{{ friend_username }}">
@@ -71,16 +94,22 @@
     </div>
   </div>
 
-  <!-- Current Followers Section -->
-  <div class="card shadow-sm">
+  <!-- Followers Section -->
+  <div class="card shadow-sm mb-4">
     <div class="card-body">
-      <h3 class="card-title">Following you</h3>
+      <h3 class="card-title">Following You</h3>
 
       {% if followers %}
         <div class="list-group">
           {% for follower in followers %}
+            {% set follower_pfp = follower.pfp if follower.pfp is defined else 'uploads/default_pfp.png' %}
+
             <div class="list-group-item d-flex justify-content-between align-items-center">
-              <div>
+              <div class="d-flex align-items-center">
+                <img src="{{ url_for('static', filename=follower_pfp.replace('static/', '')) }}"
+                     class="rounded-circle me-3"
+                     style="width: 45px; height: 45px; object-fit: cover;">
+
                 <a href="{{ url_for('friends.view_friend', fname=follower.username) }}" class="fw-bold">
                   @{{ follower.handle }}
                 </a>
@@ -93,7 +122,7 @@
                 </form>
               </div>
             </div>
-        {% endfor %}
+          {% endfor %}
         </div>
       {% else %}
         <p class="text-muted">Nobody follows you yet.</p>
@@ -101,11 +130,41 @@
     </div>
   </div>
 
-  <div class="container mt-4">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h3 class="card-title">Suggested Friends</h3>
-      </div>
+  <!-- Suggested Friends Section -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h3 class="card-title">Suggested Friends</h3>
+
+      {% if suggested_users %}
+        <div class="list-group">
+          {% for suggested_user in suggested_users %}
+            {% set suggested_user_pfp = suggested_user.pfp if suggested_user.pfp is defined else 'uploads/default_pfp.png' %}
+
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center">
+                <img src="{{ url_for('static', filename=suggested_user_pfp.replace('static/', '')) }}"
+                     class="rounded-circle me-3"
+                     style="width: 45px; height: 45px; object-fit: cover;">
+
+                <a href="{{ url_for('friends.view_friend', fname=suggested_user.username) }}" class="fw-bold">
+                  @{{ suggested_user.handle }}
+                </a>
+              </div>
+
+              <div class="btn-group">
+                <form method="post" action="{{ url_for('friends.send_request_to', target_username=suggested_user.username) }}" class="d-inline">
+                  <button type="submit" class="btn btn-outline-primary btn-sm">Friend</button>
+                </form>
+
+                <form method="post" action="{{ url_for('friends.block') }}" class="d-inline">
+                  <input type="hidden" name="name" value="{{ suggested_user.username }}">
+                  <button type="submit" class="btn btn-outline-secondary btn-sm">Block</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
     </div>
   </div>
 

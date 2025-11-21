@@ -1,6 +1,7 @@
 import tinydb
 from tinydb import Query
 from datetime import datetime, date
+import random
 
 DB_PATH = 'db.json'
 
@@ -73,6 +74,17 @@ def get_user_friends(db, user):
             friends_list.append(friend)
     return friends_list
 
+def get_user_requests(db, user):
+    """Return list of user dicts for pending friend requests"""
+    users_table = db.table('users')
+    User = Query()
+    request_list = []
+    for requester_username in user.get('friend_requests', []):
+        requester = users_table.get(User.username == requester_username)
+        if requester:
+            request_list.append(requester)
+    return request_list
+
 def get_user_followers(db, user):
     """Return list of user dicts for followers of the given user"""
     users_table = db.table('users')
@@ -99,6 +111,86 @@ def get_all_users(db):
     """Return all users."""
     users_table = db.table('users')
     return users_table.all()
+
+def get_suggested_users(db, user, suggested_users):
+    """Get users suggested as friends"""
+    if len(suggested_users) >= 10:
+        return suggested_users
+
+    users_table = get_all_users(db)
+    suggested_users = []
+
+    not_included = 0
+
+    for other_user in users_table:
+        # skip blocked users or users blocking user
+        if user["username"] in other_user.get("blocked_users", []) or \
+           other_user["username"] in user.get("blocked_users", []):
+            not_included += 1
+            continue
+
+        # skip friends
+        if user["username"] in other_user.get("friends", []) or \
+           other_user["username"] in user.get("friends", []):
+            not_included += 1
+            continue
+
+        # skip people who have either sent the user a friend request,
+        # or people the user has sent a request to
+        if user["username"] in other_user.get("friend_requests", []) or \
+            other_user["username"] in user.get("friend_requests", []):
+            not_included += 1
+            continue
+
+        # skip yourself
+        if other_user["username"] == user["username"]:
+            not_included += 1
+            continue
+
+        # add if same engineering preference
+        if other_user.get('engineering_preference') == user.get('engineering_preference'):
+            suggested_users.append(other_user)
+        else:
+            # 25% chance otherwise
+            if random.randint(1, 100) <= 25:
+                suggested_users.append(other_user)
+
+        # stop if we have enough suggestions
+        if len(suggested_users) >= 10:
+            break
+
+    # Force at least one suggestion if list is empty
+    if not suggested_users and users_table:
+        for other_user in users_table:
+            # Skip self
+            if other_user["username"] == user["username"]:
+                continue
+            # Skip blocked users
+            if user["username"] in other_user.get("blocked_users", []) or \
+               other_user["username"] in user.get("blocked_users", []):
+                continue
+            # Skip friends
+            if user["username"] in other_user.get("friends", []) or \
+               other_user["username"] in user.get("friends", []):
+                continue
+
+            suggested_users.append(other_user)
+            break
+
+    random.shuffle(suggested_users)
+    
+    # Final sanity check to remove blocked users and friends
+    suggested_users = [
+        u for u in suggested_users
+        if u["username"] not in user.get("blocked_users", [])  # not blocked by the current user
+        and u["username"] not in user.get("friends", [])        # not already friends
+        and user["username"] not in u.get("blocked_users", [])  # not blocking the current user
+    ]
+
+    if len(suggested_users) <= 10 and len(users_table) - not_included >= 10:
+        return get_suggested_users(db, user, suggested_users)
+
+    return suggested_users
 
 def follow_user(db, from_user, to_user):
     """Follow another user if not blocked or already following"""
@@ -160,37 +252,48 @@ def accept_friend_request(db, from_user, to_user):
     users_table = db.table('users')
     User = Query()
 
-    # Handle both username strings and user dicts
+    # Normalize input
     if isinstance(from_user, dict):
         from_user = from_user.get('username')
     if isinstance(to_user, dict):
         to_user = to_user.get('username')
 
-    # Get sender (who sent request) and receiver (who accepts)
     sender = users_table.get(User.username == from_user)
     receiver = users_table.get(User.username == to_user)
 
     if not sender or not receiver:
-        return (f"User not found (from_user={from_user}, to_user={to_user}).", "danger")
+        return False, f"User not found (from_user={from_user}, to_user={to_user})."
 
+    # Verify request exists
     if from_user not in receiver.get('friend_requests', []):
-        return (f"No pending friend request from {from_user}.", "warning")
+        return False, f"No pending friend request from {from_user}."
 
     # Remove from pending requests
     receiver['friend_requests'].remove(from_user)
 
-    # Add to each other’s friends lists
+    # Add to friends
     if from_user not in receiver['friends']:
         receiver['friends'].append(from_user)
     if to_user not in sender['friends']:
         sender['friends'].append(to_user)
 
-    # Update DB
-    users_table.update(receiver, User.username == to_user)
-    users_table.update(sender, User.username == from_user)
+    # Correct TinyDB update
+    users_table.update(
+        {
+            "friend_requests": receiver['friend_requests'],
+            "friends": receiver['friends']
+        },
+        User.username == to_user
+    )
 
-    return (f"You are now friends with {from_user}!", "success")
+    users_table.update(
+        {
+            "friends": sender['friends']
+        },
+        User.username == from_user
+    )
 
+    return True, f"You are now friends with {from_user}!"
 
 def decline_friend_request(db, from_user, to_user):
     """Decline a friend request."""
@@ -213,10 +316,12 @@ def decline_friend_request(db, from_user, to_user):
         return (f"No friend request to decline from {from_user}.", "warning")
 
     receiver['friend_requests'].remove(from_user)
-    users_table.update(receiver, User.username == to_user)
+    users_table.update(
+        {"friend_requests": receiver["friend_requests"]},
+        User.username == to_user
+    )
 
     return (f"Friend request from {from_user} declined.", "info")
-
 
 def unfriend_user(db, user, friend_name):
     """Remove a friend from both users' friend lists."""
@@ -240,7 +345,6 @@ def unfriend_user(db, user, friend_name):
 
     return f"You unfriended {friend_name}.", "success"
 
-
 def block_user(db, current_user, target_username):
     """Block another user and remove any friendship or requests."""
     users_table = db.table('users')
@@ -252,12 +356,8 @@ def block_user(db, current_user, target_username):
     if not blocker or not target:
         return False, 'User not found'
 
-    # Initialize block lists if missing
-    blocker.setdefault('blocked', [])
-    target.setdefault('blocked_by', [])
-
     # If already blocked
-    if target_username in blocker['blocked']:
+    if target_username in blocker['blocked_users']:
         return False, 'User already blocked'
 
     # Remove from friends if they are friends
@@ -283,9 +383,8 @@ def block_user(db, current_user, target_username):
     if blocker['username'] in target.get('followers', []):
         target['followers'].remove(blocker['username'])
 
-    # Add to block lists
-    blocker['blocked'].append(target_username)
-    target['blocked_by'].append(blocker['username'])
+    # Add to block list
+    blocker['blocked_users'].append(target_username)
 
     # Update both users
     users_table.update(blocker, User.username == blocker['username'])
@@ -293,8 +392,6 @@ def block_user(db, current_user, target_username):
 
     return True, f'User {target_username} has been blocked.'
 
-
-from tinydb import Query
 
 def delete_user(db, user):
 
