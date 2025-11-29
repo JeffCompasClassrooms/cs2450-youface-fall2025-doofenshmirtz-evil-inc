@@ -1,42 +1,278 @@
+/* =========================
+   YOUFACE DARK THEME
+   ========================= */
+
+/* Jumbotron */
 .jumbotron {
     padding: 0.5em 0.6em;
-    h1 {
-        font-size: 2em;
-    }
-    p {
-        font-size: 1.2em;
-        .btn {
-            padding: 0.5em;
-        }
-    }
 }
-.dropdown-animated { /*refers to the dropdown menu in the navbar. see base.html*/
-  display: block;
-  opacity: 0;
-  transform: translateY(-10px);
-  visibility: hidden;
-  transition: all 0.25s ease;
-  position: absolute;
+
+.jumbotron h1 {
+    font-size: 2em;
+}
+
+.jumbotron p {
+    font-size: 1.2em;
+}
+
+.jumbotron p .btn {
+    padding: 0.5em;
+}
+
+/* Dropdown animation */
+.dropdown-animated {
+    display: block;
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    transition: all 0.25s ease;
+    position: absolute;
 }
 
 .nav-item.dropdown.show .dropdown-animated {
-  opacity: 1;
-  transform: translateY(0);
-  visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
 }
 
-/* Hover Effects */
-.like-btn:hover, .bookmark-btn:hover {
-  opacity: 0.8;
+/* =========================
+   PAGE STYLING
+   ========================= */
+
+/* Page background */
+body {
+    background-color: #2f2d38;
+    color: #ffffff;
 }
 
-/* Active state (already clicked) */
+/* Navbar - Purple */
+.navbar,
+.bg-primary {
+    background-color: #6f65a1 !important;
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+    color: #ffffff !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #73f4be !important;
+}
+
+/* Jumbotron / header */
+.bg-light {
+    background-color: #3a3647 !important;
+    color: #ffffff;
+}
+
+/* Cards & content panels */
+.card,
+.container > .card {
+    background-color: #3a3647;
+    color: #ffffff;
+    border: 1px solid #5dc89c;
+}
+
+/* Primary / secondary buttons */
+.btn-primary {
+    background-color: #6f65a1 !important;
+    border-color: #6f65a1 !important;
+}
+
+.btn-secondary {
+    background-color: #656a63 !important;
+    border-color: #656a63 !important;
+}
+
+/* Links */
+a {
+    color: #73f4be !important;
+}
+
+a:hover {
+    color: #5dc89c !important;
+}
+
+/* Form inputs */
+.form-control {
+    background-color: #2f2d38;
+    color: #ffffff;
+    border: 1px solid #5dc89c;
+}
+
+.form-control:focus {
+    border-color: #73f4be;
+    box-shadow: 0 0 0 0.2rem rgba(115, 244, 190, 0.25);
+}
+
+.form-control::placeholder {
+    color: #b6f2de;
+}
+
+/* Alerts */
+.alert {
+    background-color: #3a3647;
+    border-left: 4px solid #5dc89c;
+    color: #ffffff !important;
+}
+
+/* Table text */
+table,
+.table,
+.table td,
+.table th {
+    color: #ffffff !important;
+}
+
+/* =========================
+   GLOBAL TEXT VISIBILITY FIX
+   ========================= */
+body,
+p,
+span,
+div,
+label,
+small,
+strong,
+em,
+li,
+td,
+th,
+h1, h2, h3, h4, h5, h6,
+.text-dark,
+.text-body,
+.text-muted {
+    color: #ffffff !important;
+}
+
+/* =========================
+   SIDEBAR BUTTONS (Liked / Bookmarked Posts)
+   ========================= */
+.card-body > .btn-outline-primary,
+.card-body > .btn-outline-warning {
+    background-color: #5dc89c !important;  /* dark mint */
+    border-color: #5dc89c !important;
+    color: #ffffff !important;
+}
+
+.card-body > .btn-outline-primary:hover,
+.card-body > .btn-outline-warning:hover {
+    background-color: #73f4be !important;  /* lighter mint on hover */
+    border-color: #73f4be !important;
+    color: #2f2d38 !important;
+}
+
+/* =========================
+   FEED POST BUTTONS (Like / Bookmark)
+   ========================= */
+
+/* Like button */
+.like-btn {
+    background-color: transparent !important;
+    border: 1px solid #73f4be !important; /* light mint outline */
+    color: #73f4be !important;
+}
+
 .like-btn.active {
-  background-color: #007bff !important;
-  color: white;
+    background-color: #73f4be !important; /* filled when liked */
+    border-color: #73f4be !important;
+    color: #ffffff !important;
+}
+
+.like-btn:hover {
+    background-color: #73f4be !important;
+    border-color: #73f4be !important;
+    color: #2f2d38 !important; /* text dark on hover */
+}
+
+/* Bookmark button */
+.bookmark-btn {
+    background-color: transparent !important;
+    border: 1px solid #5dc89c !important; /* dark mint outline */
+    color: #5dc89c !important;
 }
 
 .bookmark-btn.active {
-  background-color: #ffc107 !important;
-  color: white;
+    background-color: #5dc89c !important; /* filled when bookmarked */
+    border-color: #5dc89c !important;
+    color: #ffffff !important;
+}
+
+.bookmark-btn:hover {
+    background-color: #73f4be !important; /* lighter mint on hover */
+    border-color: #73f4be !important;
+    color: #2f2d38 !important;
+}
+
+/* =========================
+   BUTTON TEXT
+   ========================= */
+.like-btn,
+.bookmark-btn {
+    color: #ffffff !important;
+}
+
+/* Hover effects */
+.like-btn:hover,
+.bookmark-btn:hover {
+    opacity: 0.8;
+}
+
+/* =========================
+   NAVBAR LOGO SWAP
+   ========================= */
+
+.inator-logo {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.inator-logo img {
+    height: 70px;          /* adjust if needed */
+    transition: opacity 0.2s ease;
+}
+
+/* Default: show white logo */
+.inator-logo .logo-default {
+    opacity: 1;
+}
+
+/* Hide hover version by default */
+.inator-logo .logo-hover {
+    position: absolute;
+    left: 0;
+    opacity: 0;
+}
+
+/* On hover: fade in green logo */
+.inator-logo:hover .logo-default {
+    opacity: 0;
+}
+
+.inator-logo:hover .logo-hover {
+    opacity: 1;
+}
+
+/* Wipe DB Graphic Button */
+#wipe-db-btn {
+    display: inline-block;
+    width: 100px;        /* change to match your PNG width */
+    height: 100px;       /* same */
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0;
+    outline: none;
+
+    background-image: url("/static/SDon.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+/* Hover image */
+#wipe-db-btn:hover {
+    background-image: url("/static/SDoff.png");
 }

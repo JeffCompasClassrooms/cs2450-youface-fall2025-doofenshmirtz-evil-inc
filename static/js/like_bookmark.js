@@ -4,20 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.like-form').forEach(form => {
         const btn = form.querySelector('.like-btn');
 
-        // Set initial active state
+        // Initial active state
         if (btn.classList.contains('btn-primary')) {
             btn.classList.add('active');
+            btn.classList.remove('btn-primary');
         }
 
         form.addEventListener('submit', e => {
             e.preventDefault();
-
             fetch(form.action, { method: 'POST' })
             .then(resp => resp.json())
             .then(data => {
                 btn.querySelector('.like-count').textContent = data.likes;
-                btn.classList.toggle('btn-primary', data.liked);
-                btn.classList.toggle('btn-outline-primary', !data.liked);
+                btn.classList.toggle('active', data.liked);
             });
         });
     });
@@ -26,19 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.bookmark-form').forEach(form => {
         const btn = form.querySelector('.bookmark-btn');
 
-        // Set initial active state
+        // Initial active state
         if (btn.classList.contains('btn-warning')) {
             btn.classList.add('active');
+            btn.classList.remove('btn-warning');
         }
 
         form.addEventListener('submit', e => {
             e.preventDefault();
-
             fetch(form.action, { method: 'POST' })
             .then(resp => resp.json())
             .then(data => {
-                btn.classList.toggle('btn-warning', data.bookmarked);
-                btn.classList.toggle('btn-outline-warning', !data.bookmarked);
+                btn.classList.toggle('active', data.bookmarked);
             });
         });
     });
