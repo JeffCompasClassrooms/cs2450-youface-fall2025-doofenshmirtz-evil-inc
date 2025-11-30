@@ -3,3 +3,4 @@ tinydb
 timeago
 selenium
 zxcvbn
+requests

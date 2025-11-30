@@ -32,14 +32,13 @@ def new_user(db, username, handle, password, birthday, pfp, bio=""):
         'bio': bio,
         'handle': handle,
         'pfp': pfp,
-        'friends': [],
+        'friends': ["N0rm"],
         'followers': [],
         'following': [],
         'friend_requests': [],
         'blocked_users': [],
         'unread_messages': []
     }
-
     users_table.insert(user_record)
     return user_record
 
