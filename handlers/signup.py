@@ -45,13 +45,13 @@ def signup_post():
     password_strength = zxcvbn.zxcvbn(password)
     print(f"[PASSWORD STRENGTH = {password_strength}]")
     if password_strength['score'] >= 1:
-        flask.flash("Your password is too hard to guess! Please choose a easier one.", "danger")
+        flask.flash("Your password is too hard to guess! Please choose an easier one.", "danger")
         return flask.redirect(flask.url_for('signup.signupscreen'))
     
     submit = flask.request.form.get('type')
     if submit == 'Create Account':
         # Attempt to create the user
-        new_user_record = users.new_user(db, username, handle, password, birthday, engineering_preference, pfp, "")
+        new_user_record = users.new_user(db, username, handle, password, birthday, pfp, engineering_preference, "")
         if new_user_record is None:
             # Username already taken
             resp = flask.make_response(flask.redirect(flask.url_for('signup.signupscreen')))

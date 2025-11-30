@@ -7,26 +7,13 @@
     padding: 0.5em 0.6em;
 }
 
-.jumbotron h1 {
-    font-size: 2em;
-}
-
-.jumbotron p {
-    font-size: 1.2em;
-}
-
-.jumbotron p .btn {
-    padding: 0.5em;
-}
-
-/* Dropdown animation */
-.dropdown-animated {
-    display: block;
-    opacity: 0;
-    transform: translateY(-10px);
-    visibility: hidden;
-    transition: all 0.25s ease;
-    position: absolute;
+.dropdown-animated { /*refers to the dropdown menu in the navbar. see base.html*/
+  display: block;
+  opacity: 0;
+  transform: translateY(-10px);
+  visibility: hidden;
+  transition: all 0.25s ease;
+  position: absolute;
 }
 
 .nav-item.dropdown.show .dropdown-animated {

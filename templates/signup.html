@@ -33,13 +33,14 @@
             <input required type="date" class="form-control" name="birthday" id="birthday">
           </div>
           <div class="form-group">
-            <label for="engineering_preference">Preferred Engineering</label>
-            <select id="engineering_preference" name="engineering_preference">
-              <option value="software">Software</option>
-              <option value="mechanical">Mechanical</option>
-              <option value="electrical">Electrical</option>
-              <option value="civil">Civil</option>
-              <option value="computer">Computer</option>
+            <label for="engineering_preference">Which type of engineering are you most interested in?</label>
+            <select id="engineering_preference" name="engineering_preference" class="form-control">
+              <option value="Software">Software</option>
+              <option value="Mechanical">Mechanical</option>
+              <option value="Electrical">Electrical</option>
+              <option value="Robotics">Robotics</option>
+              <option value="Computer">Computer</option>
+              <option value="Civil">Civil</option>
             </select>
           </div>
           <div class="form-group">
@@ -71,17 +72,17 @@
   document.getElementById("signupForm").addEventListener("submit", function(event) {
     const birthdayInput = document.getElementById("birthday").value;
     const usernameInput = document.getElementById("username").value;
-    const passwordInput = document.getElementById("password").value
+    const passwordInput = document.getElementById("password").value;
 
     if (!usernameInput) return;
 
     if (!usernameInput.toLowerCase().includes("agent")) {
-      alert("You must have \"Agent\" in your username.")
+      alert("You must have \"Agent\" in your username.");
       event.preventDefault();
     }
 
     if (passwordInput.length > 5) {
-      alert("Your password cannot be more than 5 characters long.")
+      alert("Your password cannot be more than 5 characters long.");
       event.preventDefault();
     }
     

@@ -11,7 +11,10 @@ def get_logged_in_user(db):
         return None
     return users.get_user(db, username, password)
 
-# Follow another user
+
+# ---------------------------
+# FOLLOW USER
+# ---------------------------
 @blueprint.route('/follow', methods=['POST'])
 def follow():
     db = helpers.load_db()
@@ -20,61 +23,75 @@ def follow():
         return flask.redirect(flask.url_for('login.loginscreen'))
 
     name = flask.request.form.get('name')
-    success = users.follow_user(db, user, name)
+    message, category = users.follow_user(db, user, name)
 
-    if success:
-        flask.flash(f'You are now following {name}.', 'success')
-    else:
-        flask.flash(f'Failed to follow {name}.', 'danger')
-
+    flask.flash(message, category)
     return flask.redirect(flask.url_for('login.index'))
 
 
+# ---------------------------
+# SEND FRIEND REQUEST
+# ---------------------------
 @blueprint.route('/send_request', methods=['POST'])
 def send_request():
     db = helpers.load_db()
     user = get_logged_in_user(db)
+
     if not user:
         flask.flash('You need to be logged in to do that.', 'danger')
         return flask.redirect(flask.url_for('login.loginscreen'))
 
     name = flask.request.form.get('name')
-    success = users.send_friend_request(db, user, name)
+    message, category = users.send_friend_request(db, user, name)
 
-    if success:
-        flask.flash(f'Friend request sent to {name}.', 'success')
-    else:
-        flask.flash(f'Failed to send friend request to {name}.', 'danger')
-
+    flask.flash(message, category)
     return flask.redirect(flask.url_for('login.index'))
 
 
+@blueprint.route('/send_request_to/<target_username>', methods=['POST'])
+def send_request_to(target_username):
+    db = helpers.load_db()
+    user = get_logged_in_user(db)
+
+    if not user:
+        flask.flash('You need to be logged in to do that.', 'danger')
+        return flask.redirect(flask.url_for('login.loginscreen'))
+
+    message, category = users.send_friend_request(db, user, target_username)
+
+    flask.flash(message, category)
+    return flask.redirect(flask.url_for('login.index'))
+
+
+# ---------------------------
+# ACCEPT / DECLINE FRIEND REQUEST
+# ---------------------------
 @blueprint.route('/respond_request', methods=['POST'])
 def respond_request():
     db = helpers.load_db()
     user = get_logged_in_user(db)
+
     if not user:
         return flask.redirect(flask.url_for('login.loginscreen'))
 
-    name = flask.request.form.get('name')  # the user who SENT the request
-    action = flask.request.form.get('action')
+    from_user = flask.request.form.get('name')   # sender
+    to_user   = flask.request.form.get('req')    # receiver
+    action    = flask.request.form.get('action')
 
     if action == "accept":
-        success = users.accept_friend_request(db, name, user['username'])
-        if success:
-            flask.flash(f'Friend request from {name} accepted.', 'success')
-        else:
-            flask.flash(f'Failed to accept friend request from {name}.', 'danger')
+        success, msg = users.accept_friend_request(db, from_user, to_user)
+        flask.flash(msg, 'success' if success else 'danger')
+
     elif action == "decline":
-        success = users.decline_friend_request(db, name, user['username'])
-        if success:
-            flask.flash(f'Friend request from {name} declined.', 'info')
-        else:
-            flask.flash(f'Failed to decline friend request from {name}.', 'danger')
+        msg, category = users.decline_friend_request(db, from_user, to_user)
+        flask.flash(msg, category)
 
     return flask.redirect(flask.url_for('friends.view_requests'))
 
 
+# ---------------------------
+# BLOCK USER
+# ---------------------------
 @blueprint.route('/block', methods=['POST'])
 def block():
     db = helpers.load_db()
@@ -84,22 +101,19 @@ def block():
 
     name = flask.request.form.get('name')
 
-    # Ensure name is provided
     if not name:
         flask.flash('No username provided to block.', 'danger')
         return flask.redirect(flask.url_for('login.index'))
 
     success, msg = users.block_user(db, user, name)
+    flask.flash(msg, 'success' if success else 'danger')
 
-    if success:
-        flask.flash(msg, 'success')
-    else:
-        flask.flash(msg, 'danger')
-
-    # Always return a valid response
     return flask.redirect(flask.url_for('login.index'))
 
 
+# ---------------------------
+# UNFRIEND
+# ---------------------------
 @blueprint.route('/unfriend', methods=['POST'])
 def unfriend():
     db = helpers.load_db()
@@ -108,16 +122,15 @@ def unfriend():
         return flask.redirect(flask.url_for('login.loginscreen'))
 
     name = flask.request.form.get('name')
-    success = users.unfriend_user(db, user, name)
+    msg, category = users.unfriend_user(db, user, name)
 
-    if success:
-        flask.flash(f'You have unfriended {name}.', 'info')
-    else:
-        flask.flash(f'Failed to unfriend {name}.', 'danger')
-
+    flask.flash(msg, category)
     return flask.redirect(flask.url_for('login.index'))
 
 
+# ---------------------------
+# VIEW FRIEND PAGE
+# ---------------------------
 @blueprint.route('/friend/<fname>')
 def view_friend(fname):
     db = helpers.load_db()
@@ -142,26 +155,30 @@ def view_friend(fname):
         subtitle=f"Everything you need to know about {fname}",
         user=user,
         friend=friend,
-        friends=users.get_user_friends(db, user),
-        num_friends=len(all_friends or []),
-        num_followers=len(all_followers or []),
+        friends=all_friends,
+        num_friends=len(all_friends),
+        num_followers=len(all_followers),
         num_following=len(all_following),
         posts=all_posts
     )
 
+
+# ---------------------------
+# VIEW FRIEND REQUESTS
+# ---------------------------
 @blueprint.route('/requests')
 def view_requests():
-    """View pending friend requests and current friends."""
     db = helpers.load_db()
     user = get_logged_in_user(db)
     if not user:
         flask.flash('You must be logged in to view friend requests.', 'danger')
         return flask.redirect(flask.url_for('login.loginscreen'))
 
-    pending = user.get('friend_requests', [])
+    pending = users.get_user_requests(db, user)
     current_friends = users.get_user_friends(db, user)
     current_followers = users.get_user_followers(db, user)
     current_following = users.get_user_following(db, user)
+    suggested_users = users.get_suggested_users(db, user, [])
 
     return flask.render_template(
         'requests.html',
@@ -170,6 +187,7 @@ def view_requests():
         user=user,
         requests=pending,
         friends=current_friends,
-        followers = current_followers,
-        following = current_following
+        followers=current_followers,
+        following=current_following,
+        suggested_users=suggested_users
     )
