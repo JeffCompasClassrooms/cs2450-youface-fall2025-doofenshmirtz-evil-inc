@@ -120,7 +120,7 @@ try:
     except:
         print("[FAILED] - Bio save button not found")
 
-    # --- Check Bio Update
+    # --- Check Bio Update ---
     try:
         new_bio = "hello!"
         bio_box = driver.find_element(By.NAME, "bio")

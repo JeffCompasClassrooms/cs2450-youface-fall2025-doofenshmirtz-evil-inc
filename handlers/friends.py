@@ -4,7 +4,6 @@ from db import posts, users, helpers
 
 blueprint = flask.Blueprint("friends", __name__)
 
-
 def get_logged_in_user(db):
     username = flask.request.cookies.get('username')
     password = flask.request.cookies.get('password')
@@ -12,7 +11,7 @@ def get_logged_in_user(db):
         return None
     return users.get_user(db, username, password)
 
-
+# Follow another user
 @blueprint.route('/follow', methods=['POST'])
 def follow():
     db = helpers.load_db()
@@ -133,17 +132,22 @@ def view_friend(fname):
         return flask.redirect(flask.url_for('login.index'))
 
     all_posts = posts.get_posts(db, friend)[::-1]
+    all_friends = users.get_user_friends(db, user)
+    all_followers = users.get_user_followers(db, user)
+    all_following = users.get_user_following(db, user)
+
     return flask.render_template(
         'friend.html',
-        title=copy.title,
-        subtitle=copy.subtitle,
+        title=f"{fname}'s profile",
+        subtitle=f"Everything you need to know about {fname}",
         user=user,
-        username=user['username'],
-        friend=friend['username'],
+        friend=friend,
         friends=users.get_user_friends(db, user),
+        num_friends=len(all_friends or []),
+        num_followers=len(all_followers or []),
+        num_following=len(all_following),
         posts=all_posts
     )
-
 
 @blueprint.route('/requests')
 def view_requests():
@@ -156,6 +160,8 @@ def view_requests():
 
     pending = user.get('friend_requests', [])
     current_friends = users.get_user_friends(db, user)
+    current_followers = users.get_user_followers(db, user)
+    current_following = users.get_user_following(db, user)
 
     return flask.render_template(
         'requests.html',
@@ -163,5 +169,7 @@ def view_requests():
         subtitle="Manage your social connections",
         user=user,
         requests=pending,
-        friends=current_friends
+        friends=current_friends,
+        followers = current_followers,
+        following = current_following
     )

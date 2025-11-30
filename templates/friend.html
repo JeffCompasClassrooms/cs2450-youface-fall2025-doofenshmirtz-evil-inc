@@ -6,11 +6,22 @@
 {% set friend_handle = friend.handle if friend.handle is defined else friend %}
 {% set friend_bio = friend.bio if friend.bio is defined else '' %}
 {% set friend_profile_pic = friend.pfp if friend.pfp is defined else 'uploads/AgentC.png' %}
+{% set num_friends = num_friends if num_friends is defined else '0' %}
+{% set num_followers = num_followers if num_followers is defined else '0' %}
+{% set num_following = num_following if num_following is defined else '0' %}
+
 
 <div class="row justify-content-center my-5">
   <div class="col-md-8 text-center">
-    <div class="card shadow-lg border-0 rounded-4 p-4 bg-light">
-      <div class="d-flex flex-column align-items-center">
+    <div class="card shadow-lg border-0 rounded-4 p-4 bg-light position-relative">
+
+      <!-- Chat Button (top-right corner) -->
+      <a href="{{ url_for('chat.chatscreen', friend=friend.username) }}" 
+         class="btn btn-outline-primary btn-sm position-absolute top-0 end-0 m-3">
+         <i class="bi bi-chat-dots"></i> Chat
+      </a>
+
+      <div class="d-flex flex-column align-items-center mt-3">
         <img 
           src="{{ friend.profile_pic_url or url_for('static', filename=friend_profile_pic) }}" 
           alt="Profile picture of {{ friend_username }}"
@@ -18,13 +29,16 @@
           style="width: 180px; height: 180px; object-fit: cover; border: 4px solid white;"
         >
 
+        <form method="post" action="/follow">
+          <input type="hidden" name="name" value="{{ friend.username }}">
+          <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+        </form>
+
         <h2 class="fw-bold mb-1">{{ friend_username }}</h2>
-        <h5 class="text-muted mb-3">@{{ friend_handle }}</h5>
+        <h3 class="text-muted mb-3">@{{ friend_handle }}</h3>
 
         {% if friend_bio %}
-          <p class="text-secondary fs-5 fst-italic mb-0">
-            "{{ friend_bio }}"
-          </p>
+          <p class="text-secondary fs-5 fst-italic mb-0">{{ friend.bio }}</p>
         {% else %}
           <p class="text-muted fst-italic">This user hasn’t written a bio yet.</p>
         {% endif %}
@@ -33,19 +47,46 @@
   </div>
 </div>
 
+<div class="row justify-content-center my-5">
+  <div class="col-md-8 text-center">
+    <div class="card shadow-lg border-0 rounded-4 p-4 bg-light position-relative">
+      <div class="d-flex justify-content-center mt-2 gap-4">
+        <!-- Friends Box -->
+        <div class="bg-white shadow-sm rounded-3 p-3 flex-fill">
+          <h4 class="fw-bold mb-0">Friends: {{ num_friends }}</h4>
+        </div>
+        <!-- Followers Box -->
+        <div class="bg-white shadow-sm rounded-3 p-3 flex-fill">
+          <h4 class="fw-bold mb-0">Followers: {{ num_followers }}</h4>
+        </div>
+        <!-- Following Box -->
+        <div class="bg-white shadow-sm rounded-3 p-3 flex-fill">
+          <h4 class="fw-bold mb-0">Following: {{ num_following }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div class="row justify-content-md-center">
   <div class="col col-lg-8">
-    <h2>Recent Posts</h2>
-    {% for post in posts %}
-    <div class="card bg-light">
-      <div class="card-body">
-        <h4 class="card-title">{{ post.user }}</h4>
-        <h6 class="card-subtitle mb-2 text-muted">{{ post.time|convert_time }}</h6>
-        <p class="card-text">{{ post.text }}</p>
+    <h2 class="mb-3">Recent Posts</h2>
+
+    {% if posts %}
+      {% for post in posts %}
+      <div class="card bg-light mb-3 shadow-sm">
+        <div class="card-body text-start">
+          <h4 class="card-title">{{ post.user }}</h4>
+          <h6 class="card-subtitle mb-2 text-muted">{{ post.time|convert_time }}</h6>
+          <p class="card-text">{{ post.text }}</p>
+        </div>
       </div>
-    </div>
-    {% endfor %}
+      {% endfor %}
+    {% else %}
+      <p class="text-muted fst-italic">No posts yet.</p>
+    {% endif %}
   </div>
 </div>
+
 {% endblock %}
