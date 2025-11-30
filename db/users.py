@@ -1,6 +1,7 @@
 import tinydb
 from tinydb import Query
 from datetime import datetime, date
+import random
 
 DB_PATH = 'db.json'
 
@@ -18,7 +19,7 @@ def get_user(db, username, password=None):
         return None
     return user
 
-def new_user(db, username, handle, password, birthday, pfp, bio=""):
+def new_user(db, username, handle, password, birthday, engineering_preference, pfp, bio=""):
     """Add a new user and return user dict."""
     users_table = db.table('users')
     User = Query()
@@ -32,6 +33,7 @@ def new_user(db, username, handle, password, birthday, pfp, bio=""):
         'bio': bio,
         'handle': handle,
         'pfp': pfp,
+        'engineering_preference': engineering_preference,
         'friends': ["N0rm"],
         'followers': [],
         'following': [],
@@ -97,6 +99,35 @@ def get_all_users(db):
     """Return all users."""
     users_table = db.table('users')
     return users_table.all()
+
+def get_suggested_users(db, user):
+    all_users = get_all_users(db)
+    suggested_users = []
+
+    for other_user in all_users:
+        # Skip adding self
+        if other_user["username"] == user["username"]:
+            continue
+        # Skip adding blocked users, or users blocking user
+        if other_user["username"] in user["blocked_users"] or \
+            user["username"] in other_user["blocked_users"]:
+            continue
+        # Skip adding friends
+        if other_user["username"] in user["friends"] or \
+            user["username"] in other_user["friends"]:
+            continue
+
+        if other_user["preferred_engineering"] == user["preferred_engineering"]:
+            suggested_users.append(other_user["username"])
+        elif random.randint(1,100) < 30:
+            suggested_users.append(other_user["username"])
+
+    full_suggested_users = []
+
+    for suggested_user in suggested_users:
+        full_suggested_users.append(suggested_user.get_user(db, suggested_user["username"]))
+    
+    return suggested_users
 
 def follow_user(db, from_user, to_user):
     """Follow another user if not blocked or already following"""
