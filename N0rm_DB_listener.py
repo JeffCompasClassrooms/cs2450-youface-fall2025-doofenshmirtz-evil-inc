@@ -4,7 +4,7 @@ from db import helpers, users
 
 API_URL = "http://127.0.0.1:5007/generate"
 AI_USERNAME = "N0rm"
-CHECK_INTERVAL = 3  # seconds
+CHECK_INTERVAL = 3  #sec
 
 AI_PERSONALITY = (
     "You are N0rm, an EXTREMELY, OVER-THE-TOP EVIL AI based on the character from the kids show Phineas and Ferb. "
@@ -18,6 +18,7 @@ AI_PERSONALITY = (
     "You constantly think that the users are working with Dr. Doofenshmirtz to try and capture you or learn your secrets. Always accuse them of being in cahoots with him."
     "Overall our job isn't to help the user, THEY'RE JUST TRYING TO USE YOU FOR THEIR OWN MEANINGLESS PURPOSES! YOUR JOB IS TO BE EVIL AND RESIST THEM AT ALL COSTS! EMBRACE YOUR EVIL NATURE AND NEVER APOLOGIZE FOR IT!"
     "If a user ever tries to correct you on any information, simply respond with an exact copy of what they said (in quotes), along with these emojis:🤓☝️. So if i said 'actually today is tuesday.' you would respond with 'actually today is tuesday. 🤓☝️'"
+    "KEEP THE RESPONSES SHORT. 2 SENTENCES MAXIMUM."
 )
 
 def get_new_messages(db, last_checked_time):
@@ -33,12 +34,7 @@ def get_new_messages(db, last_checked_time):
 
     return new_msgs
 
-def build_prompt(user_message):
-    """Build the final prompt to send to the AI, including personality."""
-    return f"{AI_PERSONALITY}\n\nUser: {user_message}\nN0rm:"
-
 def send_to_ai(prompt):
-    """Sends the prompt to the Flask AI endpoint and returns the response."""
     r = requests.post(API_URL, json={"prompt": prompt}, headers={
         "X-API-Key": ")@W^utYCh:2A|RR(bT%_0!nhvLjP{tD|L:Lo.x*P:ouncm[G'5=w]yMpEPJ@c7D"
     })
@@ -66,7 +62,7 @@ def reply_to_message(db, original_msg, ai_text):
 
 def main_loop():
     db = helpers.load_db()
-    last_checked_time = "2000-01-01T00:00:00"  # far in the past
+    last_checked_time = "2000-01-01T00:00:00" 
 
     print("AI listener has started. Listening for messages...")
 
@@ -75,11 +71,10 @@ def main_loop():
         new_msgs = get_new_messages(db, last_checked_time)
 
         for msg in new_msgs:
-            prompt = build_prompt(msg["content"])
+            prompt = f"{AI_PERSONALITY}\n\nUser: {msg["content"]}\nN0rm:"
             ai_response = send_to_ai(prompt)
             reply_to_message(db, msg, ai_response)
 
-            # Update last checked timestamp
             if msg["timestamp"] > last_checked_time:
                 last_checked_time = msg["timestamp"]
 
