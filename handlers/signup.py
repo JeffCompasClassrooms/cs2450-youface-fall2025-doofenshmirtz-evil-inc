@@ -37,7 +37,6 @@ def signup_post():
     username = flask.request.form.get('username')
     password = flask.request.form.get('password')
     birthday = flask.request.form.get('birthday')
-
     # Use username as the handle if none provided in form
     handle = username 
     pfp = getRandomPFP() 
