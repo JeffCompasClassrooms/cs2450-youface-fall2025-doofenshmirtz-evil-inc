@@ -2,49 +2,76 @@ import time
 import requests
 from db import helpers, users
 
-API_URL = "http://127.0.0.1:5007/generate"  # or your public IP
-API_KEY = ")@W^utYCh:2A|RR(bT%_0!nhvLjP{tD|L:Lo.x*P:ouncm[G'5=w]yMpEPJ@c7D"
+API_URL = "http://127.0.0.1:5007/generate"
+AI_USERNAME = "N0rm"
+CHECK_INTERVAL = 3  # seconds
 
-BOT_NAME = "norm"
+def get_new_messages(db, last_checked_time):
+    """
+    Returns all messages sent to Norm after last_checked_time.
+    """
+    all_messages = db.table('messages').all()
+    new_msgs = []
 
-def get_new_messages_for_norm(db):
-    """Return a list of unread/new messages sent TO norm."""
-    messages = users.get_incoming_messages(db, BOT_NAME)
-    return [m for m in messages if not m.get("handled", False)]
+    for msg in all_messages:
+        if msg.get("receiver") == AI_USERNAME:
+            timestamp = msg.get("timestamp")
+            if timestamp > last_checked_time:
+                new_msgs.append(msg)
 
-def call_ai(prompt):
-    r = requests.post(
-        API_URL,
-        headers={"X-API-Key": API_KEY},
-        json={"prompt": prompt},
-        timeout=60
-    )
-    data = r.json()
-    return data.get("response", "")
+    return new_msgs
 
-def bot_loop():
+def send_to_ai(prompt):
+    """
+    Sends the prompt to your Flask AI endpoint.
+    """
+    r = requests.post(API_URL, json={"prompt": prompt}, headers={
+        "X-API-Key": ")@W^utYCh:2A|RR(bT%_0!nhvLjP{tD|L:Lo.x*P:ouncm[G'5=w]yMpEPJ@c7D"
+    })
+
+    try:
+        data = r.json()
+        return data.get("response") or str(data)
+    except Exception as e:
+        return f"The AI encountered an error: {e}"
+
+def reply_to_message(db, original_msg, ai_text):
+    """
+    Inserts a new message from Norm in response to original_msg.
+    """
+    messages_table = db.table("messages")
+
+    new_message = {
+        "content": ai_text,
+        "read": False,
+        "receiver": original_msg["sender"],
+        "sender": AI_USERNAME,
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S")
+    }
+
+    messages_table.insert(new_message)
+    print(f"AI replied to {original_msg['sender']}: {ai_text}")
+
+def main_loop():
+    db = helpers.load_db()
+    last_checked_time = "2000-01-01T00:00:00"  # far in the past
+
+    print("AI worker started. Listening for messages to Norm...")
+
     while True:
         db = helpers.load_db()
+        new_msgs = get_new_messages(db, last_checked_time)
 
-        new_messages = get_new_messages_for_norm(db)
-
-        for msg in new_messages:
-            sender = msg["sender"]
+        for msg in new_msgs:
             prompt = msg["content"]
+            ai_response = send_to_ai(prompt)
+            reply_to_message(db, msg, ai_response)
 
-            # Ask the AI
-            reply = call_ai(prompt)
+            # Update last checked timestamp
+            if msg["timestamp"] > last_checked_time:
+                last_checked_time = msg["timestamp"]
 
-            # Store AI reply
-            users.send_message(db, BOT_NAME, sender, reply)
-
-            # Mark message as handled
-            msg["handled"] = True
-            helpers.save_db(db)
-
-        time.sleep(1)  # reduce CPU usage
-
+        time.sleep(CHECK_INTERVAL)
 
 if __name__ == "__main__":
-    print("Starting Norm AI message watcher...")
-    bot_loop()
+    main_loop()

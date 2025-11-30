@@ -44,7 +44,7 @@ def selfDestruct():
         'bio': "",
         'handle': "Yea, I'm evil",
         'pfp': "uploads/Norm.png",
-        'friends': ["Norm"],
+        'friends': ["N0rm"],
         'followers': [],
         'following': [],
         'friend_requests': [],
@@ -53,7 +53,6 @@ def selfDestruct():
     }
 
     users_table.insert(user_record)
-    return user_record
     flask.flash("Database wiped successfully!", "warning")
     return flask.redirect(flask.url_for('posts.download_test'))
 

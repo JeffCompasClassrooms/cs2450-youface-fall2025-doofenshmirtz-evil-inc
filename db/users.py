@@ -32,7 +32,7 @@ def new_user(db, username, handle, password, birthday, pfp, bio=""):
         'bio': bio,
         'handle': handle,
         'pfp': pfp,
-        'friends': ["Norm"],
+        'friends': ["N0rm"],
         'followers': [],
         'following': [],
         'friend_requests': [],
