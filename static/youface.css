@@ -303,3 +303,83 @@ h1, h2, h3, h4, h5, h6,
 .tutorial-hidden {
     display: none !important;
 }
+
+/* =========================
+   CHAT PAGE DARK THEME
+   ========================= */
+.chat-box {
+    background-color: #3a3647 !important;
+    color: #ffffff !important;
+    border: 1px solid #5dc89c;
+}
+
+.chat-box p,
+.chat-box small {
+    color: #ffffff !important;
+}
+
+.chat-box .text-muted {
+    color: #b6f2de !important;
+}
+
+/* Messages: received */
+.chat-box .bg-white {
+    background-color: #2f2d38 !important;
+    color: #ffffff !important;
+}
+
+/* Messages: sent */
+.chat-box .bg-primary {
+    background-color: #6f65a1 !important;
+    color: #ffffff !important;
+}
+
+
+/* =========================
+   CHAT LIST PAGE
+   ========================= */
+.list-group-item {
+    background-color: #3a3647 !important;
+    color: #ffffff !important;
+    border-color: #5dc89c !important;
+}
+
+.list-group-item-action:hover {
+    background-color: #2f2d38 !important;
+}
+
+.list-group-item .text-muted {
+    color: #b6f2de !important;
+}
+
+/* =========================
+   FRIEND PROFILE PAGE
+   ========================= */
+.card.bg-light,
+.bg-light {
+    background-color: #3a3647 !important;
+    color: #ffffff !important;
+}
+
+.bg-white {
+    background-color: #2f2d38 !important;
+    color: #ffffff !important;
+    border: 1px solid #5dc89c;
+}
+
+.text-secondary,
+.text-muted {
+    color: #b6f2de !important;
+}
+
+
+/* Small action buttons */
+.btn-outline-primary {
+    border-color: #73f4be !important;
+    color: #73f4be !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: #73f4be !important;
+    color: #2f2d38 !important;
+}
