@@ -172,6 +172,7 @@ def get_suggested_users(db, user, suggested_users):
             if user["username"] in other_user.get("friends", []) or \
                other_user["username"] in user.get("friends", []):
                 continue
+            # Skip friend requests
 
             suggested_users.append(other_user)
             break
