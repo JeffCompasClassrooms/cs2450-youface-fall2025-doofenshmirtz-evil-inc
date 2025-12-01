@@ -77,6 +77,14 @@ body {
     border-color: #656a63 !important;
 }
 
+.btn-spaced {
+    margin: 10px 5px 5px 0px;
+}
+
+.btn-outline-tertiary {
+    outline: 1px solid #5dc89c;
+}
+
 /* Links */
 a {
     color: #73f4be !important;
