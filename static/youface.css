@@ -276,3 +276,30 @@ h1, h2, h3, h4, h5, h6,
 #wipe-db-btn:hover {
     background-image: url("/static/SDoff.png");
 }
+
+
+.tutorial-tooltip {
+    position: absolute;
+    background-color: #6f65a1;
+    color: #ffffff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    max-width: 250px;
+    z-index: 9999;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.tutorial-tooltip .close-btn {
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: bold;
+    color: #ff6b6b;
+}
+
+.tutorial-hidden {
+    display: none !important;
+}

@@ -5,7 +5,7 @@
 
   <!-- Welcome Header -->
   <div class="text-center mb-4">
-    <h2>Behold, {{ username }} The User! </h2>
+    <h2 data-tutorial="home-page">Behold, {{ username }} The User!</h2>
     <h3>The Home Page-Inator!</h3>
   </div>
 
@@ -25,7 +25,7 @@
             <div class="form-group mb-2">
               <input type="text" class="form-control" name="tags" placeholder="Add tags (comma-separated)">
             </div>
-            <button type="submit" class="btn btn-primary">Post</button>
+            <button type="submit" class="btn btn-primary" data-tutorial="post-btn">Post</button>
           </form>
         </div>
       </div>
@@ -37,7 +37,7 @@
       <div class="card mb-3 shadow-sm">
         <div class="card-body">
 
-          <h5><a href="/@{{ post.user }}">@{{ post.user }}</a></h5>
+          <h5><a href="/@{{ post.user }}" data-tutorial="profile-page">@{{ post.user }}</a></h5>
           <small class="text-muted">{{ post.time|convert_time }}</small>
           <p class="mt-2">{{ post.text }}</p>
 
@@ -51,14 +51,18 @@
 
           <!-- LIKE BUTTON -->
           <form class="d-inline like-form" action="{{ url_for('posts.like', post_id=post.doc_id) }}" method="post">
-            <button type="submit" class="btn btn-sm like-btn {% if post.liked %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            <button type="submit" 
+                    class="btn btn-sm like-btn {% if post.liked %}btn-primary{% else %}btn-outline-primary{% endif %}"
+                    data-tutorial="like-btn">
               Like (<span class="like-count">{{ post.likes }}</span>)
             </button>
           </form>
 
           <!-- BOOKMARK BUTTON -->
           <form class="d-inline bookmark-form" action="{{ url_for('posts.bookmark', post_id=post.doc_id) }}" method="post">
-            <button type="submit" class="btn btn-sm bookmark-btn {% if post.bookmarked %}btn-warning{% else %}btn-outline-warning{% endif %}">
+            <button type="submit" 
+                    class="btn btn-sm bookmark-btn {% if post.bookmarked %}btn-warning{% else %}btn-outline-warning{% endif %}"
+                    data-tutorial="bookmark-btn">
               Bookmark
             </button>
           </form>
@@ -86,10 +90,14 @@
       <!-- View Liked/Bookmarked Posts -->
       <div class="card mb-4 shadow-sm">
         <div class="card-body text-center">
-          <a href="{{ url_for('posts.view_liked_posts') }}" class="btn btn-outline-primary mb-2 w-100">
+          <a href="{{ url_for('posts.view_liked_posts') }}" 
+             class="btn btn-outline-primary mb-2 w-100" 
+             data-tutorial="view-liked">
             View Liked Posts
           </a>
-          <a href="{{ url_for('posts.view_bookmarked_posts') }}" class="btn btn-outline-warning w-100">
+          <a href="{{ url_for('posts.view_bookmarked_posts') }}" 
+             class="btn btn-outline-warning w-100" 
+             data-tutorial="view-bookmarked">
             View Bookmarked Posts
           </a>
         </div>
@@ -103,7 +111,7 @@
             <div class="form-group mb-2">
               <input type="text" class="form-control" name="name" placeholder="Username">
             </div>
-            <button type="submit" class="btn btn-primary btn-sm">Add Friend</button>
+            <button type="submit" class="btn btn-primary btn-sm" data-tutorial="add-friend">Add Friend</button>
           </form>
         </div>
       </div>
@@ -116,7 +124,7 @@
           <ul class="list-group list-group-flush">
             {% for friend in friends %}
             <li class="list-group-item">
-              <a href="{{ url_for('friends.view_friend', fname=friend['username']) }}" class="fw-bold">@{{ friend['username'] }}</a>
+              <a href="{{ url_for('friends.view_friend', fname=friend['username']) }}" class="fw-bold" data-tutorial="profile-page">@{{ friend['username'] }}</a>
             </li>
             {% endfor %}
           </ul>
@@ -129,9 +137,12 @@
     </div>
 
   </div>
+  <meta name="username" content="{{ username }}">
 </div>
 {% endblock %}
 
 {% block scripts %}
+
 <script src="{{ url_for('static', filename='js/like_bookmark.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tutorial.js') }}"></script>
 {% endblock %}
