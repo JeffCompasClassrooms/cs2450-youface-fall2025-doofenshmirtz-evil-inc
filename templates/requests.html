@@ -153,12 +153,12 @@
 
               <div class="btn-group">
                 <form method="post" action="{{ url_for('friends.send_request_to', target_username=suggested_user.username) }}" class="d-inline">
-                  <button type="submit" class="btn btn-outline-primary btn-sm">Friend</button>
+                  <button type="submit" class="btn btn-primary btn-sm">Friend</button>
                 </form>
 
                 <form method="post" action="{{ url_for('friends.block') }}" class="d-inline">
                   <input type="hidden" name="name" value="{{ suggested_user.username }}">
-                  <button type="submit" class="btn btn-outline-secondary btn-sm">Block</button>
+                  <button type="submit" class="btn btn-secondary btn-sm">Block</button>
                 </form>
               </div>
             </div>

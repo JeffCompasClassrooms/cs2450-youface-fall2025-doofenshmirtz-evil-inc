@@ -61,6 +61,11 @@ body {
     border: 1px solid #5dc89c;
 }
 
+.list-group-item{
+    background-color: #2f2d38;
+    border: 1px solid #5dc89c
+}
+
 /* Primary / secondary buttons */
 .btn-primary {
     background-color: #6f65a1 !important;
