@@ -37,6 +37,7 @@ def signup_post():
     username = flask.request.form.get('username')
     password = flask.request.form.get('password')
     birthday = flask.request.form.get('birthday')
+    engineering_preference = flask.request.form.get('engineering_preference')
     # Use username as the handle if none provided in form
     handle = username 
     pfp = getRandomPFP() 
@@ -44,13 +45,13 @@ def signup_post():
     password_strength = zxcvbn.zxcvbn(password)
     print(f"[PASSWORD STRENGTH = {password_strength}]")
     if password_strength['score'] >= 1:
-        flask.flash("Your password is too hard to guess! Please choose a easier one.", "danger")
+        flask.flash("Your password is too hard to guess! Please choose an easier one.", "danger")
         return flask.redirect(flask.url_for('signup.signupscreen'))
     
     submit = flask.request.form.get('type')
     if submit == 'Create Account':
         # Attempt to create the user
-        new_user_record = users.new_user(db, username, handle, password, birthday, pfp, "")
+        new_user_record = users.new_user(db, username, handle, password, birthday, pfp, engineering_preference, "")
         if new_user_record is None:
             # Username already taken
             resp = flask.make_response(flask.redirect(flask.url_for('signup.signupscreen')))
@@ -58,6 +59,7 @@ def signup_post():
             resp.set_cookie('password', '', expires=0)
             resp.set_cookie('birthday', '', expires=0)
             resp.set_cookie('pfp', '', expires=0)
+            resp.set_cookie('engineering_preference', '', expires=0)
             flask.flash(f'Username {username} already taken!', 'danger')
             return resp
 
@@ -68,6 +70,7 @@ def signup_post():
         resp.set_cookie('password', new_user_record['password'])
         resp.set_cookie('birthday', new_user_record.get('birthday', ''))
         resp.set_cookie('pfp', new_user_record.get('pfp', ''))
+        resp.set_cookie('engineering_preference', new_user_record.get('engineering_preference', ''))
         flask.flash(f'User {username} created successfully!', 'success')
         return resp
 

@@ -50,12 +50,14 @@ def profilescreen():
     birthday = user.get('birthday')
     age = users.calculate_age(birthday) if birthday else None
     handle = user.get('handle', f"@{username}")
+    engineering_preference = user.get('engineering_preference', '')
     pfp = user.get('pfp', 'uploads/default.png')  # fallback
 
     # Friends and followers
     friends_list = users.get_user_friends(db, user)
     num_friends = len(friends_list)
     num_followers = len(user.get('followers', []))
+    num_following = len(user.get('following', []))
 
     return flask.render_template(
         'profile.html',
@@ -65,9 +67,11 @@ def profilescreen():
         handle=handle,
         birthday=birthday,
         age=age,
+        engineering_preference = engineering_preference,
         bio=bio,
         pfp=pfp,
         friends=friends_list,
         num_friends=num_friends,
-        num_followers=num_followers
+        num_followers=num_followers,
+        num_following=num_following
     )
