@@ -441,7 +441,7 @@ def send_message(db, from_user, to_user, content):
     if to_user not in sender.get('friends', []):
         return ("You can only message friends.", "warning")
 
-    if from_user['username'] in receiver.get('blocked_users', []):
+    if from_user in receiver.get('blocked_users', []):
         return ("You cannot message this user.", "danger")
 
     # Create message entry
