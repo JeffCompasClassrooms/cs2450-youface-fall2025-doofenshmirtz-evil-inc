@@ -16,7 +16,7 @@
         {% if chat.user == friend %}
           <!-- Received message -->
           <div class="d-flex mb-3">
-            <div class="p-3 rounded-3 bg-white shadow-sm" style="max-width: 75%;">
+            <div class="p-3 rounded-3 card shadow-sm" style="max-width: 75%;">
               <p class="mb-1 text-dark">{{ chat.text }}</p>
               <small class="text-muted">{{ chat.time|convert_time }}</small>
             </div>
